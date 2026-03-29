@@ -1,0 +1,73 @@
+{
+  "Bangus": {
+    "binomial_name": "Chanos chanos",
+    "english_names": ["Milkfish"],
+    "local_names": ["Bangus"],
+    "description": "A silvery, torpedo-shaped fish widely farmed across the Philippines and considered its national fish. It thrives in both freshwater and saltwater environments, making it ideal for aquaculture. Known for its mild flavor and tender flesh, though notably bony.",
+    "nutrition": {
+      "protein": "22g",
+      "mercury": "MEDIUM",
+      "omega3": "HIGH"
+    },
+    "health_checks": [
+      "High in Protein",
+      "Zero Carbohydrates",
+      "Good source of Vitamin B12",
+      "Good source of Niacin (B3)",
+      "Good source of Phosphorus",
+      "Good source of Omega-3"
+    ],
+    "health_risks": [
+      "Moderate mercury level — limit to 1-2 servings per week",
+      "Relatively high in fat compared to leaner fish"
+    ]
+  },
+  "Tilapia": {
+    "binomial_name": "Oreochromis niloticus",
+    "english_names": ["Nile Tilapia", "Gray Tilapia"],
+    "local_names": ["Tilapia", "Tilapya"],
+    "description": "A freshwater fish native to Africa and widely farmed across the Philippines. It has white, mild-flavored, lean flesh with a firm texture. One of the most commercially important aquaculture species in the country.",
+    "nutrition": {
+      "protein": "20g",
+      "mercury": "LOW",
+      "omega3": "LOW"
+    },
+    "health_checks": [
+      "High in Protein",
+      "Low in Calories",
+      "Low in Fat",
+      "Low in Mercury",
+      "Good source of Vitamin D",
+      "Good source of Vitamin B12",
+      "Zero Carbohydrates",
+      "Low in Saturated Fat"
+    ],
+    "health_risks": [
+      "High omega-6 to omega-3 ratio may promote inflammation",
+      "Low omega-3 content compared to other fish",
+      "Low in heart-healthy fatty acids"
+    ]
+  },
+  "Big Head Carp": {
+    "binomial_name": "Hypophthalmichthys nobilis",
+    "english_names": ["Bighead Carp"],
+    "local_names": ["Karpa", "Imelda"],
+    "description": "A large freshwater fish introduced to the Philippines from mainland Asia for aquaculture. Widely farmed in Laguna Lake alongside tilapia and milkfish. Known for rapid growth and mild-flavored white flesh, though it has a notably large head and many small bones.",
+    "nutrition": {
+      "protein": "18g",
+      "mercury": "LOW",
+      "omega3": "MEDIUM"
+    },
+    "health_checks": [
+      "High in Protein",
+      "Good source of Omega-3",
+      "Low in Mercury",
+      "Good source of Vitamin B12",
+      "Low in Saturated Fat"
+    ],
+    "health_risks": [
+      "Moderate omega-6 content may offset some omega-3 benefits",
+      "Lower omega-3 levels compared to marine fish"
+    ]
+  }
+}

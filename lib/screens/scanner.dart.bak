@@ -1,0 +1,168 @@
+import 'package:flutter/material.dart';
+import 'package:ultralytics_yolo/ultralytics_yolo.dart';
+import 'package:ultralytics_yolo/widgets/yolo_controller.dart';
+import 'package:camera/camera.dart';
+
+class ScannerScreen extends StatefulWidget {
+  const ScannerScreen({super.key});
+
+  @override
+  State<ScannerScreen> createState() => _PageState();
+}
+
+class _PageState extends State<ScannerScreen> {
+  late CameraController _cameraController;
+  late Future<void> _initializeControllerFuture;
+
+  final YOLOViewController _yoloController = YOLOViewController();
+  String _label = "";
+  bool _showOverlay = false;
+  bool _useFrontCam = false;
+  double _confidenceThreshold = .1;
+
+  @override
+  void initState() {
+    super.initState();
+    _initCamera();
+  }
+
+  @override
+  void dispose() {
+    // Dispose of the controller when the widget is disposed.
+    _cameraController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _initCamera() async {
+    // Ensure that plugin services are initialized so that `availableCameras()`
+    // can be called before `runApp()`
+    WidgetsFlutterBinding.ensureInitialized();
+
+    // Obtain a list of the available cameras on the device.
+    final cameras = await availableCameras();
+
+    _cameraController = CameraController(
+      // Get a specific camera from the list of available cameras.
+      cameras.first,
+      // Define the resolution to use.
+      ResolutionPreset.medium,
+    );
+
+    // Next, initialize the controller. This returns a Future.
+    _initializeControllerFuture = _cameraController.initialize();
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Expanded(
+          child: Stack(
+            children: [
+              FutureBuilder<void>(
+                future: _initializeControllerFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    // If the Future is complete, display the preview.
+                    return CameraPreview(_cameraController);
+                  } else {
+                    // Otherwise, display a loading indicator.
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                },
+              ),
+              // YOLOView(
+              //   controller: _controller,
+              //   modelPath: "best_float32.tflite",
+              //   task: YOLOTask.classify,
+              //   confidenceThreshold: _confidenceThreshold,
+              //   useGpu: true,
+              //   showOverlays: _showOverlay,
+              //   streamingConfig: const YOLOStreamingConfig(
+              //     includeClassifications: true,
+              //   ),
+              //   onResult: (results) {
+              //     print("RESULT: $results");
+              //     setState(() {
+              //       _label = "Count: ${results.length}";
+              //     });
+              //   },
+              //   onStreamingData: (Map<String, dynamic> data) {
+              //     final classResult = data['classification'];
+              //     if (classResult != null) {
+              //       setState(() {
+              //         _label =
+              //             "${classResult['top1Label']} ${(classResult['top1Conf'] * 100).toStringAsFixed(2)}%";
+              //       });
+              //     }
+              //   },
+              // ),
+              Positioned(
+                bottom: 16,
+                left: 16,
+                child: IconButton(
+                  icon: const Icon(Icons.image_rounded, size: 42),
+                  onPressed: () {},
+                ),
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  margin: EdgeInsets.only(bottom: 16),
+                  child: IconButton(
+                    icon: const Icon(Icons.camera_rounded, size: 76),
+                    onPressed: () {},
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Container(
+          decoration: BoxDecoration(color: Colors.white),
+          child: Column(
+            children: [
+              Text(_label, style: TextStyle(color: Colors.black)),
+              CheckboxListTile(
+                title: Text('Show overlay'),
+                value: _showOverlay,
+                onChanged: (bool? value) {
+                  setState(() {
+                    _showOverlay = value ?? false;
+                    _yoloController.setShowOverlays(_showOverlay);
+                  });
+                },
+              ),
+              CheckboxListTile(
+                title: Text('Use front camera'),
+                value: _useFrontCam,
+                onChanged: (bool? value) {
+                  setState(() {
+                    _useFrontCam = value ?? false;
+                    _yoloController.switchCamera();
+                  });
+                },
+              ),
+              Text("Confidence threshold $_confidenceThreshold"),
+              Slider(
+                value: _confidenceThreshold,
+                min: 0,
+                max: 1,
+                divisions: 100,
+                onChanged: (double value) {
+                  setState(() {
+                    _confidenceThreshold = value;
+                    _yoloController.setConfidenceThreshold(
+                      _confidenceThreshold,
+                    );
+                  });
+                },
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
