@@ -1,13 +1,22 @@
+import "dart:typed_data";
+
 import "package:eatsmart/fishes.dart";
 import "package:flutter/material.dart";
 import "package:material_design_icons_flutter/material_design_icons_flutter.dart";
 
-Widget buildScanResult(BuildContext context, String label, Fish fishData) {
+Widget buildScanResult(
+  BuildContext context,
+  String label,
+  Fish fishData,
+  Uint8List? imageBytes,
+) {
   return Column(
     children: [
       Stack(
         children: [
-          Image.asset("assets/$label.jpg"),
+          imageBytes == null
+              ? Image.asset("assets/$label.jpg")
+              : Image.memory(imageBytes),
           Positioned.fill(
             child: Container(
               decoration: BoxDecoration(

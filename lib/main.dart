@@ -18,6 +18,7 @@ class App extends StatelessWidget {
     return MaterialApp(
       title: _title,
       theme: ThemeData(
+        fontFamily: "Istok Web",
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
       ),
       home: Main(title: _title),
@@ -35,7 +36,7 @@ class Main extends StatefulWidget {
 
 class _MainState extends State<Main> with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  final _titles = ['Home', 'Scanner', 'Fishes'];
+  final _titles = ['Home', 'Scanner', 'Fish Library'];
 
   @override
   void initState() {
