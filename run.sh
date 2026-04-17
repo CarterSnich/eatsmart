@@ -9,4 +9,5 @@ echo "PID: $FLUTTER_PID"
 find lib -type f -name "*.dart" | entr -np sh -c "pkill --signal USR1 --pidfile $FLUTTER_PID" &
 flutter run --pid-file="$FLUTTER_PID"
 pkill entr
+pkill java
 exit 0

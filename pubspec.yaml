@@ -33,13 +33,10 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.8
   material_design_icons_flutter: ^7.0.7296
-  ultralytics_yolo:
-    git:
-      url: https://github.com/dmjtian/yolo-flutter-app.git
-      ref: 6ffe84de6773df01dd6c64597b1ad4b1f24f949c
   image_picker: ^1.2.1
   camera: ^0.12.0+1
   fluttertoast: ^9.0.0
+  ultralytics_yolo: ^0.2.0
 
 dev_dependencies:
   flutter_test:
