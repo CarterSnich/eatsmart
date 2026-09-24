@@ -31,10 +31,13 @@ android {
     }
 
     buildTypes {
-	debug {
-	    applicationIdSuffix = ".debug"
-	}
+        debug {
+            applicationIdSuffix = ".debug"
+            resValue("string", "app_name", "debug")
+        }
         release {
+            resValue("string", "app_name", "EatSmart")
+
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")
@@ -44,6 +47,7 @@ android {
     androidResources {
         noCompress += "tflite"
     }
+
 }
 
 flutter {

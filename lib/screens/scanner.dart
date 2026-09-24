@@ -58,7 +58,7 @@ class _PageState extends State<ScannerScreen> {
   Future<void> _loadYOLO() async {
     setState(() => isLoading = true);
 
-    yolo = YOLO(modelPath: 'fish', task: YOLOTask.classify);
+    yolo = YOLO(modelPath: 'assets/model.tflite', useGpu: true);
 
     await yolo!.loadModel();
     setState(() => isLoading = false);
@@ -69,18 +69,18 @@ class _PageState extends State<ScannerScreen> {
     final classification = results['classification'];
     final double confidence = classification['confidence'];
     final resultLabel = classification['name'];
-    final Fish? fishData = fishDatabase[resultLabel];
+    // final Fish? fishData = fishDatabase[resultLabel];
 
     Fluttertoast.showToast(
       msg: "$resultLabel ${(confidence * 100).toStringAsFixed(2)}%",
     );
-    if (!context.mounted) {
-      Fluttertoast.showToast(msg: "Failed to show results.");
-    } else if (confidence < 0.9 || fishData == null) {
-      Fluttertoast.showToast(msg: "No fish classified");
-    } else {
-      showResultModalSheet(resultLabel, fishData, imageBytes);
-    }
+    // if (!context.mounted) {
+    //   Fluttertoast.showToast(msg: "Failed to show results.");
+    // } else if (confidence < 0.9 || fishData == null) {
+    //   Fluttertoast.showToast(msg: "No fish classified");
+    // } else {
+    //   showResultModalSheet(resultLabel, fishData, imageBytes);
+    // }
   }
 
   void showResultModalSheet(

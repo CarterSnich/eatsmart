@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
 
-class MyCard extends StatefulWidget {
-  const MyCard({super.key});
+class MyCard extends StatelessWidget {
+  const MyCard({super.key, this.radius = 8.0, required this.child});
 
-  @override
-  State<MyCard> createState() => _MyCardState();
-}
+  final double radius;
+  final Widget child;
 
-class _MyCardState extends State<MyCard> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(radius),
+        boxShadow: const [
+          BoxShadow(color: Colors.black26, blurRadius: 8, offset: Offset(0, 4)),
+        ],
+      ),
+      child: Padding(padding: EdgeInsets.all(radius * .5), child: child),
+    );
   }
 }

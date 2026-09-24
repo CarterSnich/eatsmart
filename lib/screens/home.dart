@@ -90,7 +90,7 @@ class _PageState extends State<HomeScreen> {
                   ),
                 ),
                 InkWell(
-                  onTap: () {},
+                  onTap: () => widget.tabController.animateTo(2),
                   child: Text(
                     "View all",
                     style: TextStyle(

@@ -66,67 +66,69 @@ MaterialColor getColor(String level) {
   }
 }
 
-Widget buildListItemCard(
-  BuildContext context,
-  String fish,
-  Fish fishData,
-) => Card(
-  elevation: 0,
-  color: Theme.of(context).canvasColor,
-  shape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(12),
-    side: BorderSide(color: Color(0xE4E1E1FF), width: 2),
-  ),
-  child: Padding(
-    padding: const EdgeInsets.all(12.0),
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: 16,
-      children: [
-        SizedBox(
-          height: 76,
-          width: 76,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Image.asset(
-              "assets/$fish.jpg",
-              fit: BoxFit.cover,
-              alignment: Alignment.center,
-            ),
-          ),
-        ),
-        Column(
+Widget buildListItemCard(BuildContext context, String fish, Fish fishData) =>
+    Card(
+      elevation: 0,
+      color: Theme.of(context).canvasColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: Color(0xE4E1E1FF), width: 2),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: 16,
           children: [
-            Text(
-              fishData.popularName,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            Text(
-              fishData.englishNames[0],
-              style: Theme.of(context).textTheme.labelLarge,
-            ),
-            Row(
-              spacing: 8,
-              children: [
-                Pill(
-                  label:
-                      "${fishData.nutrition.mercury.substring(0, 3)} MERCURY",
-                  foregroundColor: getColor(fishData.nutrition.mercury),
-                  backgroundColor: getColor(
-                    fishData.nutrition.mercury,
-                  ).shade100,
+            SizedBox(
+              height: 76,
+              width: 76,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.asset(
+                  "assets/$fish.jpg",
+                  fit: BoxFit.cover,
+                  alignment: Alignment.center,
                 ),
-                Pill(
-                  label: "${fishData.nutrition.protein} PROTEIN",
-                  foregroundColor: Colors.blue,
-                  backgroundColor: Colors.blue.shade100,
+              ),
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  fishData.popularName,
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                Text(
+                  fishData.englishNames[0],
+                  style: Theme.of(context).textTheme.labelLarge,
+                ),
+                Row(
+                  spacing: 8,
+                  children: [
+                    MyPill(
+                      backgroundColor: getColor(
+                        fishData.nutrition.mercury,
+                      ).shade100,
+                      child: Text(
+                        "${fishData.nutrition.mercury.substring(0, 3)} MERCURY",
+                        style: TextStyle(
+                          color: getColor(fishData.nutrition.mercury),
+                        ),
+                      ),
+                    ),
+                    MyPill(
+                      backgroundColor: Colors.blue.shade100,
+                      child: Text(
+                        "${fishData.nutrition.protein} PROTEIN",
+                        style: TextStyle(color: Colors.blue),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
           ],
         ),
-      ],
-    ),
-  ),
-);
+      ),
+    );

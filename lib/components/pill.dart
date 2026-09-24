@@ -1,26 +1,36 @@
 import 'package:flutter/material.dart';
 
-class Pill extends StatelessWidget {
-  const Pill({
+class MyPill extends StatelessWidget {
+  const MyPill({
     super.key,
-    required this.label,
-    this.foregroundColor,
-    this.backgroundColor,
+    required this.child,
+    this.backgroundColor = Colors.white,
+    this.border = true,
+    this.borderColor,
   });
 
-  final String label;
-  final Color? foregroundColor;
-  final Color? backgroundColor;
+  final Widget child;
+  final Color backgroundColor;
+  final bool border;
+  final Color? borderColor;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(999),
+    return IntrinsicWidth(
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          color: backgroundColor,
+          border: BoxBorder.all(
+            width: 2,
+            color: border
+                ? borderColor ?? Colors.grey.shade300
+                : backgroundColor,
+          ),
+          borderRadius: BorderRadius.circular(999),
+        ),
+        child: child,
       ),
-      child: Text(label, style: TextStyle(color: foregroundColor)),
     );
   }
 }
