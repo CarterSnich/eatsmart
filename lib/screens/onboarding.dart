@@ -1,9 +1,10 @@
-import 'package:eatsmart/components/card.dart';
-import 'package:eatsmart/components/pill.dart';
+import 'package:eatsmart/components/my_card.dart';
+import 'package:eatsmart/components/my_pill.dart';
 import 'package:eatsmart/components/text_button.dart';
-import 'package:eatsmart/tabs.dart';
+import 'package:eatsmart/screens/scan.dart';
+import 'package:eatsmart/welcome_messages_data.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class OnboardingPage extends StatefulWidget {
@@ -14,44 +15,15 @@ class OnboardingPage extends StatefulWidget {
 }
 
 class _OnboardingPageState extends State<OnboardingPage> {
-  final List<Map<String, String>> quotes = [
-    {
-      'headline': 'Eat Smart',
-      'body':
-          'Making informed choices about the food you eat can help you build healthier meals, understand what your body needs, and enjoy every bite with greater confidence.',
-    },
-    {
-      'headline': 'Fresh Choices',
-      'body':
-          'Every ingredient has a story. Take a moment to learn where your food comes from, what it contains, and how it can contribute to a balanced and nutritious meal.',
-    },
-    {
-      'headline': 'Know Your Fish',
-      'body':
-          'Not sure what fish you brought home from the market? Identify your catch and discover useful information about its nutritional value, common names, and characteristics.',
-    },
-    {
-      'headline': 'Choose Wisely',
-      'body':
-          'Understanding the food on your plate gives you the information you need to make choices that suit your preferences, dietary needs, and the people you are preparing meals for.',
-    },
-    {
-      'headline': 'From Catch to Plate',
-      'body':
-          'From the moment you find your fish at the market to the moment it becomes part of your meal, knowing what you are buying can help you prepare food with greater confidence.',
-    },
-  ];
-
   int _currentQouteIndex = 0;
 
   void _navigate() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool("is_first_launch", false);
+    await GetStorage().write("is_first_launch", false);
 
     if (mounted) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const TabbedPage()),
+        MaterialPageRoute(builder: (context) => const ScanPage()),
       );
     }
   }
@@ -71,6 +43,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   padding: const EdgeInsets.all(8.0),
                   child: MyCard(
                     radius: 32,
+                    borderWidth: 0,
+                    padding: 10,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       spacing: 12.0,
@@ -80,7 +54,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                             children: [
                               Align(
                                 alignment: Alignment.center,
-                                child: AnimatedCircles(),
+                                child: _AnimatedCircles(),
                               ),
                               Align(
                                 alignment: Alignment.bottomLeft,
@@ -104,16 +78,34 @@ class _OnboardingPageState extends State<OnboardingPage> {
                             ],
                           ),
                         ),
-                        Text(
-                          quotes[_currentQouteIndex]['headline']!,
-                          textAlign: TextAlign.left,
-                          style: Theme.of(context).textTheme.headlineLarge
-                              ?.copyWith(fontWeight: FontWeight.bold),
+                        AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 300),
+                          layoutBuilder: (currentChild, previousChildren) {
+                            return Stack(
+                              alignment: Alignment.centerLeft,
+                              children: [...previousChildren, ?currentChild],
+                            );
+                          },
+                          child: Text(
+                            welcomeMessages[_currentQouteIndex]['headline']!,
+                            textAlign: TextAlign.left,
+                            style: Theme.of(context).textTheme.headlineLarge
+                                ?.copyWith(fontWeight: FontWeight.bold),
+                            key: ValueKey(
+                              welcomeMessages[_currentQouteIndex]['headline']!,
+                            ),
+                          ),
                         ),
-                        Text(
-                          quotes[_currentQouteIndex]['body']!,
-                          style: Theme.of(context).textTheme.bodyLarge
-                              ?.copyWith(color: Colors.grey.shade700),
+                        AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 300),
+                          child: Text(
+                            welcomeMessages[_currentQouteIndex]['body']!,
+                            style: Theme.of(context).textTheme.bodyLarge
+                                ?.copyWith(color: Colors.white),
+                            key: ValueKey(
+                              welcomeMessages[_currentQouteIndex]['body']!,
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -123,11 +115,12 @@ class _OnboardingPageState extends State<OnboardingPage> {
               Center(
                 child: AnimatedSmoothIndicator(
                   activeIndex: _currentQouteIndex,
-                  count: quotes.length,
+                  count: welcomeMessages.length,
                   effect: WormEffect(
                     dotWidth: 12,
                     dotHeight: 12,
-                    activeDotColor: Colors.grey.shade900,
+                    activeDotColor: Colors.white,
+                    dotColor: Colors.grey.shade700,
                   ),
                   onDotClicked: (index) => setState(() {
                     _currentQouteIndex = index;
@@ -141,15 +134,16 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   Expanded(
                     child: MyTextButton(
                       onPress: () {
-                        if (_currentQouteIndex == quotes.length - 1) {
+                        if (_currentQouteIndex == welcomeMessages.length - 1) {
                           _navigate();
-                        } else if (_currentQouteIndex < quotes.length - 1) {
+                        } else if (_currentQouteIndex <
+                            welcomeMessages.length - 1) {
                           setState(() {
                             _currentQouteIndex++;
                           });
                         }
                       },
-                      text: _currentQouteIndex == quotes.length - 1
+                      text: _currentQouteIndex == welcomeMessages.length - 1
                           ? "Finish"
                           : "Next",
                       backgroundColor: Colors.grey.shade900,
@@ -166,14 +160,12 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 }
 
-class AnimatedCircles extends StatefulWidget {
-  const AnimatedCircles({super.key});
-
+class _AnimatedCircles extends StatefulWidget {
   @override
-  State<AnimatedCircles> createState() => _AnimatedCirclesState();
+  State<_AnimatedCircles> createState() => _AnimatedCirclesState();
 }
 
-class _AnimatedCirclesState extends State<AnimatedCircles>
+class _AnimatedCirclesState extends State<_AnimatedCircles>
     with SingleTickerProviderStateMixin {
   late final AnimationController controller;
 
@@ -221,19 +213,19 @@ class _AnimatedCirclesState extends State<AnimatedCircles>
               // Outer
               Transform.scale(
                 scale: scale(0.43, 1.0, t),
-                child: _circle(240, const Color(0xFF0791C3), 0.18),
+                child: _circle(240, Colors.blue.shade900, 0.18),
               ),
 
               // Middle
               Transform.scale(
                 scale: scale(0.21, 0.78, t),
-                child: _circle(204, const Color(0xFF92C8DB), 0.12),
+                child: _circle(204, Colors.blue.shade700, 0.12),
               ),
 
               // Inner
               Transform.scale(
                 scale: scale(0.0, 0.56, t),
-                child: _circle(136, const Color(0xFF003AB8), 0.08),
+                child: _circle(136, Colors.blue, 0.08),
               ),
             ],
           ),

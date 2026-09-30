@@ -20,8 +20,13 @@ dependencies:
   fluttertoast: ^9.0.0
   ultralytics_yolo: ^0.6.4
   flutter_native_splash: ^2.4.7
-  shared_preferences: ^2.5.5
   smooth_page_indicator: ^3.0.0
+  file_picker: ^13.1.0
+  path_provider: ^2.1.6
+  simple_loading_dialog: ^1.0.0
+  get_storage: ^2.1.1
+  package_info_plus: ^10.2.1
+  animations: ^2.2.0
 
 
 dev_dependencies:
@@ -33,13 +38,18 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
+    - assets/fish_images/Bangus.jpg
+    - assets/fish_images/Tilapia.jpg
+    - assets/icon.png
+    - assets/icon_brandings/TF_FullColor_Icon.png
+    - assets/icon_brandings/Ultralytics_Icon.png
+    - assets/icon_brandings/Ultralytics_YOLO_Icon.png
+    - assets/icon_brandings/fishbase_logo.png
+    - assets/icon_brandings/flutter_icon.png
     - assets/model.tflite
-    - assets/home-fishes.jpg
-    - assets/Bangus.jpg
-    - assets/Big Head Carp.jpg
-    - assets/Tilapia.jpg
-    - assets/Tenpounder.jpg
-    - assets/Scat Fish.jpg
+    - assets/splash.png
+
+  # assets end
   fonts:
     - family: "Istok Web"
       fonts:

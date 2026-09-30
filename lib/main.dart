@@ -1,15 +1,18 @@
-import 'package:eatsmart/onboarding.dart';
-import 'package:eatsmart/tabs.dart';
+import 'package:eatsmart/screens/onboarding.dart';
+import 'package:eatsmart/screens/scan.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:get_storage/get_storage.dart';
+
+final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
-  final prefs = await SharedPreferences.getInstance();
-  final isFirstLaunch = prefs.getBool('is_first_launch') ?? true;
+  await GetStorage.init();
+  // final isFirstLaunch = GetStorage().read("is_first_launch") ?? true;
+  final isFirstLaunch = true;
 
   FlutterNativeSplash.remove();
 
@@ -20,16 +23,21 @@ class App extends StatelessWidget {
   const App({super.key, required this.isFirstLaunch});
   final bool isFirstLaunch;
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "EatSmart",
       theme: ThemeData(
+        brightness: Brightness.dark,
         fontFamily: "Istok Web",
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.blue,
+          brightness: Brightness.dark,
+        ),
+        scaffoldBackgroundColor: Color(0xFF08111F),
       ),
-      home: isFirstLaunch ? OnboardingPage() : TabbedPage(),
+      home: isFirstLaunch ? OnboardingPage() : ScanPage(),
+      navigatorObservers: [routeObserver],
     );
   }
 }

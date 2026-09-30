@@ -1,134 +1,149 @@
-import 'package:eatsmart/components/pill.dart';
-import 'package:eatsmart/fishes.dart';
+import 'package:eatsmart/components/bubble_search_bar.dart';
+import 'package:eatsmart/components/my_card.dart';
+import 'package:eatsmart/components/my_pill.dart';
+import 'package:eatsmart/components/sliver_scaffold.dart';
+import 'package:eatsmart/fish_data.dart';
+import 'package:eatsmart/generated_assets/assets.dart';
+import 'package:eatsmart/helpers.dart';
+import 'package:eatsmart/screens/fish.dart';
 import 'package:flutter/material.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:flutter/services.dart';
 
-class FishesScreen extends StatefulWidget {
-  const FishesScreen({super.key});
+class FishesPage extends StatefulWidget {
+  const FishesPage({super.key});
 
   @override
-  State<FishesScreen> createState() => _PageState();
+  State<FishesPage> createState() => _FishesPageState();
 }
 
-class _PageState extends State<FishesScreen> {
-  final entries = fishDatabase.keys.toList();
+class _FishesPageState extends State<FishesPage> {
+  List<Fish> _results = List.from(fishes.values);
+
+  @override
+  void initState() {
+    super.initState();
+
+    SystemChrome.setEnabledSystemUIMode(
+      SystemUiMode.manual,
+      overlays: [SystemUiOverlay.top],
+    );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Column(
-        spacing: 16,
-        children: [
-          TextField(
-            decoration: InputDecoration(
-              prefixIcon: Icon(MdiIcons.magnify),
-              hintText: 'Search',
-              filled: true,
-              fillColor: Colors.grey.shade200,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide.none,
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide.none,
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide.none,
+    return SliverScaffold(
+      customAppBar: SliverAppBar(
+        title: Hero(
+          tag: 'fishes',
+          child: BubbleSearchBar(
+            child: Expanded(
+              child: TextField(
+                style: const TextStyle(color: Colors.white),
+                decoration: const InputDecoration(
+                  hintText: 'Search fish',
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.zero,
+                  isDense: true,
+                ),
+                onChanged: (query) {
+                  setState(() {
+                    _results = fishes.values.where((fish) {
+                      final q = query.toLowerCase();
+                      return fish.englishName.toLowerCase().contains(q) ||
+                          fish.binomialName.toLowerCase().contains(q);
+                    }).toList();
+                  });
+                },
               ),
             ),
           ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: entries.length,
-              itemBuilder: (context, index) {
-                final fish = entries[index];
-                final fishData = fishDatabase[fish] as Fish;
-                return buildListItemCard(context, fish, fishData);
-              },
-            ),
-          ),
-        ],
+        ),
+        floating: true,
+        snap: true,
+        automaticallyImplyLeading: false,
+        backgroundColor: Color(0xFF08111F),
+      ),
+      spacing: 10,
+      children: List.generate(
+        _results.length,
+        (i) => _FishCard(fish: _results[i]),
       ),
     );
   }
 }
 
-MaterialColor getColor(String level) {
-  if (level == "HIGH") {
-    return Colors.red;
-  } else if (level == "MEDIUM") {
-    return Colors.yellow;
-  } else {
-    return Colors.green;
-  }
-}
+class _FishCard extends StatelessWidget {
+  final Fish fish;
+  const _FishCard({required this.fish});
 
-Widget buildListItemCard(BuildContext context, String fish, Fish fishData) =>
-    Card(
-      elevation: 0,
-      color: Theme.of(context).canvasColor,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: Color(0xE4E1E1FF), width: 2),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          spacing: 16,
-          children: [
-            SizedBox(
-              height: 76,
-              width: 76,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.asset(
-                  "assets/$fish.jpg",
-                  fit: BoxFit.cover,
-                  alignment: Alignment.center,
-                ),
-              ),
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+  @override
+  Widget build(BuildContext context) {
+    return MyCard(
+      child: InkWell(
+        onTap: () => navigatePush(context, FishPage(fish: fish)),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: IntrinsicHeight(
+            child: Row(
+              spacing: 10,
               children: [
-                Text(
-                  fishData.popularName,
-                  style: Theme.of(context).textTheme.titleLarge,
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.asset(
+                    Assets.fishImagesBangus,
+                    height: 80,
+                    width: 80,
+                    fit: BoxFit.cover,
+                  ),
                 ),
-                Text(
-                  fishData.englishNames[0],
-                  style: Theme.of(context).textTheme.labelLarge,
-                ),
-                Row(
-                  spacing: 8,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    MyPill(
-                      backgroundColor: getColor(
-                        fishData.nutrition.mercury,
-                      ).shade100,
-                      child: Text(
-                        "${fishData.nutrition.mercury.substring(0, 3)} MERCURY",
-                        style: TextStyle(
-                          color: getColor(fishData.nutrition.mercury),
-                        ),
+                    Text(
+                      fish.englishName,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    MyPill(
-                      backgroundColor: Colors.blue.shade100,
-                      child: Text(
-                        "${fishData.nutrition.protein} PROTEIN",
-                        style: TextStyle(color: Colors.blue),
-                      ),
+                    Text(
+                      fish.binomialName,
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    Spacer(),
+                    Row(
+                      spacing: 8,
+                      children: [
+                        if (fish.nutrition.mercury != null)
+                          MyPill(
+                            child: Text(
+                              "MERCURY ${fish.nutrition.mercury?.toUpperCase()}",
+                              style: Theme.of(context).textTheme.labelMedium,
+                            ),
+                          ),
+                        if (fish.nutrition.protein != null)
+                          MyPill(
+                            child: Text(
+                              "PROTEIN ${fish.nutrition.protein}",
+                              style: Theme.of(context).textTheme.labelMedium,
+                            ),
+                          ),
+                      ],
                     ),
                   ],
                 ),
               ],
             ),
-          ],
+          ),
         ),
       ),
     );
+  }
+}
