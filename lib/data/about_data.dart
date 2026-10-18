@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 final List<dynamic> researchers = [
   {
     "initials": "TB",
-    "name": "Troy \"Turubay\" Belita",
+    "name": "Troy Costelo Belita",
     "email": "2001971@lnu.edu.ph",
     'bgColor': Colors.lightBlue.shade900,
     'fgColor': Colors.lightBlue,
@@ -18,7 +18,7 @@ final List<dynamic> researchers = [
   },
   {
     "initials": "JC",
-    "name": "Joe Mar \"Ople\" Estrera Closa",
+    "name": "Joe Mar Estrera Closa",
     "email": "2002018@lnu.edu.ph",
     'bgColor': Colors.blueGrey.shade900,
     'fgColor': Colors.blueGrey,
@@ -32,7 +32,7 @@ final List<dynamic> researchers = [
   },
   {
     "initials": "JS",
-    "name": "Jomar Vincent \"Dalunot\" Evardone Sudario",
+    "name": "Jomar Vincent Evardone Sudario",
     "email": "2002243@lnu.edu.ph",
     'bgColor': Colors.green.shade900,
     'fgColor': Colors.green,
@@ -40,6 +40,18 @@ final List<dynamic> researchers = [
 ];
 
 final List<Map<String, String>> references = [
+  {
+    "icon": Assets.iconBrandingsFishbaseLogo,
+    "name": "FishBase",
+    "description":
+        "A global database of fish species used as a reference for taxonomy, scientific names, common names, biology, and other fish-related information.",
+  },
+  {
+    "icon": Assets.iconBrandingsFlutterIcon,
+    "name": "Flutter",
+    "description":
+        "Google's open-source UI framework used to develop the EatSmart mobile application and its user interface from a single codebase.",
+  },
   {
     "icon": Assets.iconBrandingsUltralyticsYoloIcon,
     "name": "Ultralytics YOLO",
@@ -53,21 +65,9 @@ final List<Map<String, String>> references = [
         "A computer vision platform used for dataset management, image annotation, model training, experiment tracking, and model deployment workflows.",
   },
   {
-    "icon": Assets.iconBrandingsFlutterIcon,
-    "name": "Flutter",
-    "description":
-        "Google's open-source UI framework used to develop the EatSmart mobile application and its user interface from a single codebase.",
-  },
-  {
     "icon": Assets.iconBrandingsTfFullcolorIcon,
     "name": "TFLite / LiteRT",
     "description":
         "Google's on-device machine learning runtime used to run optimized machine learning models on mobile and edge devices. TensorFlow Lite is now known as LiteRT, while the .tflite model format remains supported.",
-  },
-  {
-    "icon": Assets.iconBrandingsFishbaseLogo,
-    "name": "FishBase",
-    "description":
-        "A global database of fish species used as a reference for taxonomy, scientific names, common names, biology, and other fish-related information.",
   },
 ];

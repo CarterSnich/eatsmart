@@ -2,8 +2,15 @@
 class Assets {
   Assets._();
 
-  static const String fishImagesBangus = 'assets/fish_images/Bangus.jpg';
-  static const String fishImagesTilapia = 'assets/fish_images/Tilapia.jpg';
+  static const String fishData = 'assets/fish-data.json';
+  static const String fishImagesChanosChanos = 'assets/fish_images/Chanos chanos.jpg';
+  static const String fishImagesKatsuwonusPelamis = 'assets/fish_images/Katsuwonus pelamis.jpg';
+  static const String fishImagesNemipterusCelebicus = 'assets/fish_images/Nemipterus celebicus.jpg';
+  static const String fishImagesNeostethusThessa = 'assets/fish_images/Neostethus thessa.jpg';
+  static const String fishImagesOreochromisNiloticus = 'assets/fish_images/Oreochromis niloticus.jpg';
+  static const String fishImagesRastrelligerFaughni = 'assets/fish_images/Rastrelliger faughni.jpg';
+  static const String fishImagesSardinellaLemuru = 'assets/fish_images/Sardinella lemuru.jpg';
+  static const String fishImagesSauridaUndosquamis = 'assets/fish_images/Saurida undosquamis.jpg';
   static const String icon = 'assets/icon.png';
   static const String iconBrandingsFishbaseLogo = 'assets/icon_brandings/fishbase_logo.png';
   static const String iconBrandingsFlutterIcon = 'assets/icon_brandings/flutter_icon.png';

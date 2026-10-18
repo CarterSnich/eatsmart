@@ -1,4 +1,6 @@
-import 'package:eatsmart/about_data.dart';
+import 'package:eatsmart/components/reference_tile.dart';
+import 'package:eatsmart/components/researcher_tile.dart';
+import 'package:eatsmart/data/about_data.dart';
 import 'package:eatsmart/components/section.dart';
 import 'package:eatsmart/components/sliver_scaffold.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +33,7 @@ class _AboutPageState extends State<AboutPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SliverScaffold(
+    return MySliverScaffold(
       title: "About",
       children: [
         SizedBox(
@@ -81,11 +83,11 @@ class _AboutPageState extends State<AboutPage> {
           ).textTheme.bodyMedium?.copyWith(color: Colors.white),
         ),
         SizedBox(height: 20),
-        SectionList(
+        MySectionList(
           label: "RESEARCH TEAM",
           children: [
             for (final item in researchers)
-              ResearcherTile(
+              MyResearcherTile(
                 initials: item['initials']!,
                 name: item['name'],
                 email: item['email'],
@@ -95,11 +97,11 @@ class _AboutPageState extends State<AboutPage> {
           ],
         ),
         SizedBox(height: 20),
-        SectionList(
+        MySectionList(
           label: "REFERENCES AND ACKNOWLEDGEMENTS",
           children: [
             for (final item in references)
-              ReferenceTile(
+              MyReferenceTile(
                 icon: item['icon']!,
                 name: item['name']!,
                 description: item['description']!,
@@ -107,99 +109,6 @@ class _AboutPageState extends State<AboutPage> {
           ],
         ),
       ],
-    );
-  }
-}
-
-class ResearcherTile extends StatelessWidget {
-  final String initials;
-  final String name;
-  final String email;
-  final Color bgColor;
-  final Color fgColor;
-
-  const ResearcherTile({
-    super.key,
-    required this.bgColor,
-    required this.fgColor,
-    required this.initials,
-    required this.name,
-    required this.email,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SectionListItem(
-      onPress: () {},
-      child: Row(
-        spacing: 8,
-        children: [
-          Container(
-            width: 40,
-            height: 40,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(shape: BoxShape.circle, color: bgColor),
-            child: Text(
-              initials,
-              style: TextStyle(
-                color: fgColor,
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
-            ),
-          ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(name, style: TextStyle(color: Colors.white)),
-                Text(email, style: TextStyle(color: Colors.white)),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class ReferenceTile extends StatelessWidget {
-  final String icon;
-  final String name;
-  final String description;
-
-  const ReferenceTile({
-    super.key,
-    required this.icon,
-    required this.name,
-    required this.description,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SectionListItem(
-      onPress: () {},
-      child: Row(
-        spacing: 8,
-        children: [
-          Container(
-            width: 40,
-            height: 40,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(shape: BoxShape.circle),
-            child: Image.asset(icon),
-          ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(name, style: TextStyle(color: Colors.white)),
-                Text(description, style: TextStyle(color: Colors.white)),
-              ],
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class SliverScaffold extends StatelessWidget {
+class MySliverScaffold extends StatelessWidget {
   final String? title;
   final List<Widget> children;
   final SliverAppBar? customAppBar;
   final double spacing;
   final double padding;
 
-  const SliverScaffold({
+  const MySliverScaffold({
     super.key,
     this.title,
     required this.children,

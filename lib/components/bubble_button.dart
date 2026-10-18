@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class BubbleButton extends StatelessWidget {
+class MyBubbleButton extends StatelessWidget {
   final Widget child;
   final VoidCallback onPressed;
   final double padding;
 
-  const BubbleButton({
+  const MyBubbleButton({
     super.key,
     required this.child,
     required this.onPressed,

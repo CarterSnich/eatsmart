@@ -5,26 +5,100 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
+import 'dart:io';
+
+import 'package:eatsmart/data/fish_data.dart';
+import 'package:eatsmart/models/fish.dart';
+import 'package:eatsmart/screens/about.dart';
+import 'package:eatsmart/screens/fish.dart';
+import 'package:eatsmart/screens/fishes.dart';
+import 'package:eatsmart/screens/image.dart';
+import 'package:eatsmart/screens/onboarding.dart';
+import 'package:eatsmart/screens/scan.dart';
+import 'package:eatsmart/screens/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
+import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
-import 'package:eatsmart/main.dart';
+class MockPathProvider extends Fake
+    with MockPlatformInterfaceMixin
+    implements PathProviderPlatform {
+  @override
+  Future<String?> getApplicationDocumentsPath() async => './test';
+}
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const App(isFirstLaunch: true));
+  setUpAll(() async {
+    PathProviderPlatform.instance = MockPathProvider();
+    await GetStorage.init();
+  });
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  group("Test screens:", () {
+    testWidgets('OnboardingPage renders', (WidgetTester tester) async {
+      final stopwatch = Stopwatch()..start();
+      await tester.pumpWidget(const MaterialApp(home: OnboardingPage()));
+      stopwatch.stop();
+      print('${stopwatch.elapsedMilliseconds} ms');
+    });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    testWidgets('ScanPage renders', (WidgetTester tester) async {
+      final stopwatch = Stopwatch()..start();
+      await tester.pumpWidget(const MaterialApp(home: ScanPage()));
+      stopwatch.stop();
+      print('${stopwatch.elapsedMilliseconds} ms');
+    });
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    testWidgets('ImageDetectPage renders', (WidgetTester tester) async {
+      final stopwatch = Stopwatch()..start();
+      await tester.pumpWidget(
+        MaterialApp(
+          home: ImageDetectPage(
+            imageFile: File("c:\\Users\\LovaRM\\Downloads\\banugs.jpg"),
+          ),
+        ),
+      );
+
+      stopwatch.stop();
+      print('${stopwatch.elapsedMilliseconds} ms');
+    });
+
+    testWidgets('FishesPage renders', (WidgetTester tester) async {
+      final stopwatch = Stopwatch()..start();
+      await tester.pumpWidget(const MaterialApp(home: FishesPage()));
+
+      stopwatch.stop();
+      print('${stopwatch.elapsedMilliseconds} ms');
+    });
+
+    testWidgets('FishPage renders', (WidgetTester tester) async {
+      final stopwatch = Stopwatch()..start();
+
+      await tester.pumpWidget(
+        MaterialApp(home: FishPage(fish: fishes['bangus'] as FishData)),
+      );
+
+      stopwatch.stop();
+      print('${stopwatch.elapsedMilliseconds} ms');
+    });
+
+    testWidgets('AboutPage renders', (WidgetTester tester) async {
+      final stopwatch = Stopwatch()..start();
+
+      await tester.pumpWidget(const MaterialApp(home: AboutPage()));
+
+      stopwatch.stop();
+      print('${stopwatch.elapsedMilliseconds} ms');
+    });
+
+    testWidgets('SettingsPage renders', (WidgetTester tester) async {
+      final stopwatch = Stopwatch()..start();
+
+      await tester.pumpWidget(const MaterialApp(home: SettingsPage()));
+
+      stopwatch.stop();
+      print('${stopwatch.elapsedMilliseconds} ms');
+    });
   });
 }

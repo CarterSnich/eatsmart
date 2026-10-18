@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-class BubbleSearchBar extends StatelessWidget {
+class MyBubbleSearchBar extends StatelessWidget {
   final VoidCallback? onTap;
   final Widget child;
 
-  const BubbleSearchBar({super.key, required this.child, this.onTap});
+  const MyBubbleSearchBar({super.key, required this.child, this.onTap});
 
   @override
   Widget build(BuildContext context) {

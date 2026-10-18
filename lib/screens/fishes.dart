@@ -1,11 +1,8 @@
 import 'package:eatsmart/components/bubble_search_bar.dart';
-import 'package:eatsmart/components/my_card.dart';
-import 'package:eatsmart/components/my_pill.dart';
+import 'package:eatsmart/components/fish_card.dart';
 import 'package:eatsmart/components/sliver_scaffold.dart';
-import 'package:eatsmart/fish_data.dart';
-import 'package:eatsmart/generated_assets/assets.dart';
-import 'package:eatsmart/helpers.dart';
-import 'package:eatsmart/screens/fish.dart';
+import 'package:eatsmart/data/fish_data.dart';
+import 'package:eatsmart/models/fish.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -17,7 +14,7 @@ class FishesPage extends StatefulWidget {
 }
 
 class _FishesPageState extends State<FishesPage> {
-  List<Fish> _results = List.from(fishes.values);
+  List<FishData> _results = List.from(fishes.values);
 
   @override
   void initState() {
@@ -38,11 +35,11 @@ class _FishesPageState extends State<FishesPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SliverScaffold(
+    return MySliverScaffold(
       customAppBar: SliverAppBar(
         title: Hero(
           tag: 'fishes',
-          child: BubbleSearchBar(
+          child: MyBubbleSearchBar(
             child: Expanded(
               child: TextField(
                 style: const TextStyle(color: Colors.white),
@@ -57,7 +54,7 @@ class _FishesPageState extends State<FishesPage> {
                     _results = fishes.values.where((fish) {
                       final q = query.toLowerCase();
                       return fish.englishName.toLowerCase().contains(q) ||
-                          fish.binomialName.toLowerCase().contains(q);
+                          fish.englishName.toLowerCase().contains(q);
                     }).toList();
                   });
                 },
@@ -73,76 +70,7 @@ class _FishesPageState extends State<FishesPage> {
       spacing: 10,
       children: List.generate(
         _results.length,
-        (i) => _FishCard(fish: _results[i]),
-      ),
-    );
-  }
-}
-
-class _FishCard extends StatelessWidget {
-  final Fish fish;
-  const _FishCard({required this.fish});
-
-  @override
-  Widget build(BuildContext context) {
-    return MyCard(
-      child: InkWell(
-        onTap: () => navigatePush(context, FishPage(fish: fish)),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: IntrinsicHeight(
-            child: Row(
-              spacing: 10,
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: Image.asset(
-                    Assets.fishImagesBangus,
-                    height: 80,
-                    width: 80,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      fish.englishName,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      fish.binomialName,
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    Spacer(),
-                    Row(
-                      spacing: 8,
-                      children: [
-                        if (fish.nutrition.mercury != null)
-                          MyPill(
-                            child: Text(
-                              "MERCURY ${fish.nutrition.mercury?.toUpperCase()}",
-                              style: Theme.of(context).textTheme.labelMedium,
-                            ),
-                          ),
-                        if (fish.nutrition.protein != null)
-                          MyPill(
-                            child: Text(
-                              "PROTEIN ${fish.nutrition.protein}",
-                              style: Theme.of(context).textTheme.labelMedium,
-                            ),
-                          ),
-                      ],
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
+        (i) => MyFishCard(fish: _results[i]),
       ),
     );
   }

@@ -27,19 +27,27 @@ dependencies:
   get_storage: ^2.1.1
   package_info_plus: ^10.2.1
   animations: ^2.2.0
-
+  permission_handler: ^12.0.3
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
   flutter_launcher_icons: ^0.14.4
+  plugin_platform_interface: ^2.1.8
+  path_provider_platform_interface: ^2.1.3
 
 flutter:
   uses-material-design: true
   assets:
-    - assets/fish_images/Bangus.jpg
-    - assets/fish_images/Tilapia.jpg
+    - assets/fish_images/Chanos chanos.jpg
+    - assets/fish_images/Katsuwonus pelamis.jpg
+    - assets/fish_images/Nemipterus celebicus.jpg
+    - assets/fish_images/Neostethus thessa.jpg
+    - assets/fish_images/Oreochromis niloticus.jpg
+    - assets/fish_images/Rastrelliger faughni.jpg
+    - assets/fish_images/Sardinella lemuru.jpg
+    - assets/fish_images/Saurida undosquamis.jpg
     - assets/icon.png
     - assets/icon_brandings/TF_FullColor_Icon.png
     - assets/icon_brandings/Ultralytics_Icon.png
@@ -49,15 +57,10 @@ flutter:
     - assets/model.tflite
     - assets/splash.png
 
-  # assets end
   fonts:
-    - family: "Istok Web"
+    - family: "Commissioner"
       fonts:
-        - asset: assets/Istok_Web/IstokWeb-Regular.ttf
-        - asset: assets/Istok_Web/IstokWeb-Bold.ttf
+        - asset: assets/Commissioner/Commissioner-Regular.ttf
+          weight: 400
+        - asset: assets/Commissioner/Commissioner-Bold.ttf
           weight: 700
-        - asset: assets/Istok_Web/IstokWeb-Italic.ttf
-          style: italic
-        - asset: assets/Istok_Web/IstokWeb-BoldItalic.ttf
-          weight: 700
-          style: italic

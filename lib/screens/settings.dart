@@ -1,4 +1,5 @@
 import 'package:eatsmart/components/section.dart';
+import 'package:eatsmart/components/settings_item.dart';
 import 'package:eatsmart/components/sliver_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -17,6 +18,8 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  final _storage = GetStorage();
+
   @override
   void initState() {
     super.initState();
@@ -49,59 +52,27 @@ class _SettingsPageState extends State<SettingsPage> {
     );
 
     if (newModelPath == null) return;
-    await GetStorage().write("model_path", newModelPath);
+    await _storage.write("model_path", newModelPath);
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    return SliverScaffold(
+    return MySliverScaffold(
       title: "Settings",
       children: [
-        SectionList(
+        MySectionList(
           label: "MODEL",
           padding: 0,
           children: [
-            SettingsItem(
+            MySettingsItem(
               label: "Model path",
-              description: GetStorage().read("model_path") ?? "Default model",
+              description: _storage.read("model_path") ?? "Default model",
               onPress: () => _clickModelPathItem(context),
             ),
           ],
         ),
       ],
-    );
-  }
-}
-
-class SettingsItem extends StatelessWidget {
-  final String label;
-  final String? description;
-  final VoidCallback onPress;
-
-  const SettingsItem({
-    super.key,
-    required this.label,
-    required this.onPress,
-    this.description,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SectionListItem(
-      onPress: onPress,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: Theme.of(
-              context,
-            ).textTheme.bodyLarge?.copyWith(color: Colors.white),
-          ),
-          Text("$description", style: TextStyle(color: Colors.white)),
-        ],
-      ),
     );
   }
 }

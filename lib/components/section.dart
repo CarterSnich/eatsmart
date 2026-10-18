@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class NakedSection extends StatelessWidget {
+class MyNakedSection extends StatelessWidget {
   final Widget child;
   final String label;
   final double padding;
 
-  const NakedSection({
+  const MyNakedSection({
     super.key,
     required this.child,
     required this.label,
@@ -31,12 +31,17 @@ class NakedSection extends StatelessWidget {
   }
 }
 
-class Section extends StatelessWidget {
+class MySection extends StatelessWidget {
   final Widget child;
   final String? label;
   final double padding;
 
-  const Section({super.key, required this.child, this.label, this.padding = 8});
+  const MySection({
+    super.key,
+    required this.child,
+    this.label,
+    this.padding = 8,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -66,12 +71,12 @@ class Section extends StatelessWidget {
   }
 }
 
-class SectionList extends StatelessWidget {
+class MySectionList extends StatelessWidget {
   final List<Widget> children;
   final String? label;
   final double padding;
 
-  const SectionList({
+  const MySectionList({
     super.key,
     required this.children,
     this.label,
@@ -80,7 +85,7 @@ class SectionList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Section(
+    return MySection(
       label: label,
       padding: padding,
       child: Column(
@@ -91,11 +96,11 @@ class SectionList extends StatelessWidget {
   }
 }
 
-class SectionListItem extends StatelessWidget {
+class MySectionListItem extends StatelessWidget {
   final Widget child;
   final VoidCallback? onPress;
 
-  const SectionListItem({super.key, required this.child, this.onPress});
+  const MySectionListItem({super.key, required this.child, this.onPress});
 
   @override
   Widget build(BuildContext context) {
