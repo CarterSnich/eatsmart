@@ -53,8 +53,26 @@ class _FishesPageState extends State<FishesPage> {
                   setState(() {
                     _results = fishes.values.where((fish) {
                       final q = query.toLowerCase();
-                      return fish.englishName.toLowerCase().contains(q) ||
-                          fish.englishName.toLowerCase().contains(q);
+                      final hasEnglishName = fish.englishName
+                          .toLowerCase()
+                          .contains(q);
+                      final hasBinomialName = fish.binomialName
+                          .toLowerCase()
+                          .contains(q);
+                      final hasPopularName = fish.popularName
+                          .toLowerCase()
+                          .contains(q);
+
+                      bool hasLocalName = false;
+                      for (var ln in fish.localNames) {
+                        hasLocalName = ln.toLowerCase().contains(q);
+                        if (hasLocalName) break;
+                      }
+
+                      return hasEnglishName ||
+                          hasBinomialName ||
+                          hasPopularName ||
+                          hasLocalName;
                     }).toList();
                   });
                 },

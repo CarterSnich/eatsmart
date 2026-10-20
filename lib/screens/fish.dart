@@ -1,5 +1,6 @@
 import 'package:eatsmart/components/card.dart';
 import 'package:eatsmart/components/fish_hero.dart';
+import 'package:eatsmart/components/pill.dart';
 import 'package:eatsmart/components/section.dart';
 import 'package:eatsmart/components/sliver_scaffold.dart';
 import 'package:eatsmart/data/nutrients_metadata.dart';
@@ -37,12 +38,11 @@ class _FishPageState extends State<FishPage> {
               MyNakedSection(
                 label: "LOCAL NAMES",
                 child: Wrap(
-                  spacing: 8,
-                  runSpacing: 4,
+                  spacing: 4,
+                  runSpacing: 8,
                   children: List.generate(
                     fish.localNames.length,
-                    (index) =>
-                        MyCard(padding: 8, child: Text(fish.localNames[index])),
+                    (index) => MyPill(child: Text(fish.localNames[index])),
                   ),
                 ),
               ),

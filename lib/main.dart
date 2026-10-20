@@ -29,7 +29,7 @@ class App extends StatelessWidget {
       title: "EatSmart",
       theme: ThemeData(
         brightness: Brightness.dark,
-        fontFamily: "Istok Web",
+        fontFamily: "Commissioner",
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.blue,
           brightness: Brightness.dark,

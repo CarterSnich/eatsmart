@@ -32,25 +32,32 @@ class ScanPage extends StatefulWidget {
   State<ScanPage> createState() => _ScanPageState();
 }
 
-class _ScanPageState extends State<ScanPage> with RouteAware {
+class _ScanPageState extends State<ScanPage>
+    with RouteAware, WidgetsBindingObserver {
   bool _isReady = false;
   late PermissionStatus _cameraStatus;
 
   final YOLOViewController _yoloViewController = YOLOViewController();
   List<String> _labels = [];
 
+  bool _isWaitingAppSettings = false;
+
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
     _initCameraStatus();
-    _yoloViewController.setShowOverlays(false);
+    _yoloViewController.setStreamingConfig(
+      YOLOStreamingConfig(includeMasks: false),
+    );
   }
 
   @override
-  void dispose() async {
+  void dispose() {
     _yoloViewController.stop();
     routeObserver.unsubscribe(this);
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -72,11 +79,33 @@ class _ScanPageState extends State<ScanPage> with RouteAware {
     super.didPopNext();
   }
 
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _getCameraStatus();
+      setState(() {
+        _isWaitingAppSettings = false;
+      });
+    }
+  }
+
   void _initCameraStatus() async {
-    _cameraStatus = await Permission.camera.status;
+    final status = await _getCameraStatus();
+    if (!status.isGranted) {
+      await _requestCameraPermission();
+    }
     setState(() {
       _isReady = true;
     });
+  }
+
+  Future<PermissionStatus> _getCameraStatus() async {
+    final status = await Permission.camera.status;
+    setState(() {
+      _cameraStatus = status;
+    });
+
+    return status;
   }
 
   Future<void> _requestCameraPermission() async {
@@ -86,13 +115,17 @@ class _ScanPageState extends State<ScanPage> with RouteAware {
     });
   }
 
-  void _pushImageDetect(File image) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ImageDetectPage(imageFile: image),
-      ),
-    );
+  Future<void> _openAppSettings() async {
+    if (!_isWaitingAppSettings) {
+      setState(() {
+        _isWaitingAppSettings = true;
+      });
+      await openAppSettings();
+    }
+  }
+
+  void _onModelError(Object error, String modelPath, YOLOTask? task) {
+    Fluttertoast.showToast(msg: "${error.toString()}: $modelPath");
   }
 
   void _onResult(List<YOLOResult> results) {
@@ -105,19 +138,6 @@ class _ScanPageState extends State<ScanPage> with RouteAware {
     setState(() {
       _labels = labels;
     });
-  }
-
-  void _onModelError(Object error, String modelPath, YOLOTask? task) {
-    Fluttertoast.showToast(msg: "${error.toString()}: $modelPath");
-  }
-
-  Future<void> _pickFromGallery() async {
-    final picker = ImagePicker();
-    final image = await picker.pickImage(source: ImageSource.gallery);
-
-    if (image != null) {
-      _pushImageDetect(File(image.path));
-    }
   }
 
   void _onLabelPress(String label) {
@@ -133,6 +153,23 @@ class _ScanPageState extends State<ScanPage> with RouteAware {
         MaterialPageRoute(builder: (context) => FishPage(fish: fish)),
       );
     }
+  }
+
+  Future<void> _pickFromGallery() async {
+    final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+
+    if (image != null) {
+      _pushImageDetect(File(image.path));
+    }
+  }
+
+  void _pushImageDetect(File image) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ImageDetectPage(imageFile: image),
+      ),
+    );
   }
 
   @override
@@ -152,6 +189,8 @@ class _ScanPageState extends State<ScanPage> with RouteAware {
                     : Align(
                         alignment: AlignmentGeometry.center,
                         child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          spacing: 8,
                           children: [
                             Text(
                               "Please allow camera access to use the scanner.",
@@ -160,6 +199,11 @@ class _ScanPageState extends State<ScanPage> with RouteAware {
                               MyTextButton(
                                 onPress: _requestCameraPermission,
                                 text: "Request camera permission",
+                              ),
+                            if (_cameraStatus.isPermanentlyDenied)
+                              MyTextButton(
+                                onPress: _openAppSettings,
+                                text: "Open app settings",
                               ),
                           ],
                         ),

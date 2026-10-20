@@ -15,7 +15,7 @@ class MyNavButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 70,
+      width: 80,
       child: Material(
         color: Colors.transparent,
         child: InkWell(

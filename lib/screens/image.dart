@@ -46,31 +46,40 @@ class _ImageDetectPageState extends State<ImageDetectPage> {
     return Scaffold(
       body: _isReady
           ? Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Image.file(widget.imageFile),
-                Wrap(
-                  spacing: 8,
-                  children: List.generate(
-                    _labels.length,
-                    (index) => MyPill(
-                      child: Text(
-                        _labels[index],
-                        style: TextStyle(fontSize: 16),
-                      ),
-                      onPress: () {
-                        FishData? fish = fishes[_labels[index]];
+                Flexible(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Image.file(widget.imageFile),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    spacing: 8,
+                    children: List.generate(
+                      _labels.length,
+                      (index) => MyPill(
+                        child: Text(
+                          _labels[index],
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        onPress: () {
+                          FishData? fish = fishes[_labels[index]];
 
-                        if (fish == null) {
-                          Fluttertoast.showToast(msg: "Fish unknown.");
-                        } else {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => FishPage(fish: fish),
-                            ),
-                          );
-                        }
-                      },
+                          if (fish == null) {
+                            Fluttertoast.showToast(msg: "Fish unknown.");
+                          } else {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => FishPage(fish: fish),
+                              ),
+                            );
+                          }
+                        },
+                      ),
                     ),
                   ),
                 ),
