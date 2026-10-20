@@ -6,7 +6,6 @@ import 'package:eatsmart/components/sliver_scaffold.dart';
 import 'package:eatsmart/data/nutrients_metadata.dart';
 import 'package:eatsmart/models/fish.dart';
 import 'package:flutter/material.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class FishPage extends StatefulWidget {
   final FishData fish;
@@ -87,10 +86,7 @@ class _FishPageState extends State<FishPage> {
                       child: Row(
                         spacing: 8,
                         children: [
-                          Icon(
-                            MdiIcons.checkCircleOutline,
-                            color: Colors.green,
-                          ),
+                          Icon(Icons.check_circle_outline, color: Colors.green),
                           Expanded(child: Text(fish.healthChecks[index])),
                         ],
                       ),
@@ -112,7 +108,7 @@ class _FishPageState extends State<FishPage> {
                         spacing: 8,
                         children: [
                           Icon(
-                            MdiIcons.alertCircleOutline,
+                            Icons.error_outline,
                             color: Colors.yellow.shade900,
                           ),
                           Expanded(

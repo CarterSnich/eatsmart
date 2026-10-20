@@ -20,7 +20,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ultralytics_yolo/ultralytics_yolo.dart';
 
 import 'fish.dart';
@@ -48,9 +47,7 @@ class _ScanPageState extends State<ScanPage>
     WidgetsBinding.instance.addObserver(this);
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
     _initCameraStatus();
-    _yoloViewController.setStreamingConfig(
-      YOLOStreamingConfig(includeMasks: false),
-    );
+    _yoloViewController.setShowOverlays(false);
   }
 
   @override
@@ -254,7 +251,7 @@ class _ScanPageState extends State<ScanPage>
                                 },
                                 padding: 12,
                                 child: Icon(
-                                  MdiIcons.information,
+                                  Icons.info_outline,
                                   color: Colors.white,
                                 ),
                               ),
@@ -302,7 +299,7 @@ class _ScanPageState extends State<ScanPage>
                                     onPressed: _pickFromGallery,
                                     padding: 20,
                                     child: Icon(
-                                      MdiIcons.imageMultiple,
+                                      Icons.photo_library_outlined,
                                       color: Colors.white,
                                       size: 28,
                                     ),
@@ -323,7 +320,7 @@ class _ScanPageState extends State<ScanPage>
                                       //   },
                                       // ),
                                       MyNavButton(
-                                        icon: MdiIcons.cogOutline,
+                                        icon: Icons.settings_outlined,
                                         label: "Settings",
                                         onPressed: () => navigatePush(
                                           context,
