@@ -27,6 +27,7 @@ dependencies:
   package_info_plus: ^10.2.1
   animations: ^3.0.0
   permission_handler: ^11.3.1
+  flutter_spinkit: ^5.2.2
 
 dev_dependencies:
   flutter_test:

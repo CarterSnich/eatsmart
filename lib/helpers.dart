@@ -3,8 +3,17 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:ultralytics_yolo/yolo.dart';
 
-Future<dynamic> navigatePush(BuildContext context, Widget screen) {
-  return Navigator.push(context, MaterialPageRoute(builder: (_) => screen));
+Future<dynamic> navigatePush(
+  BuildContext context,
+  Widget screen, [
+  VoidCallback? cb,
+]) async {
+  final route = await Navigator.push(
+    context,
+    MaterialPageRoute(builder: (_) => screen),
+  );
+  cb?.call();
+  return route;
 }
 
 Future<dynamic> navigatePushHero(BuildContext context, Widget screen) {
