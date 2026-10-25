@@ -41,10 +41,7 @@ class MyResearcherTile extends StatelessWidget {
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(name, style: TextStyle(color: Colors.white)),
-                Text(email, style: TextStyle(color: Colors.white)),
-              ],
+              children: [Text(name), Text(email)],
             ),
           ),
         ],

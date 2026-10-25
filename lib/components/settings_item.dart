@@ -20,13 +20,8 @@ class MySettingsItem extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            label,
-            style: Theme.of(
-              context,
-            ).textTheme.bodyLarge?.copyWith(color: Colors.white),
-          ),
-          Text("$description", style: TextStyle(color: Colors.white)),
+          Text(label, style: Theme.of(context).textTheme.bodyLarge),
+          if (description != null) Text(description!),
         ],
       ),
     );

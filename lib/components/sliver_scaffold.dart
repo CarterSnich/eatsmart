@@ -19,7 +19,7 @@ class MySliverScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF08111F),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
@@ -29,14 +29,12 @@ class MySliverScaffold extends StatelessWidget {
               SliverAppBar(
                 title: Text(
                   title!,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.headlineLarge?.copyWith(color: Colors.white),
+                  style: Theme.of(context).textTheme.headlineLarge,
                 ),
                 floating: true,
                 snap: true,
                 automaticallyImplyLeading: false,
-                backgroundColor: const Color(0xFF08111F),
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               ),
             SliverPadding(
               padding: EdgeInsets.all(padding),

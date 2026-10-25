@@ -1,3 +1,4 @@
+import 'package:eatsmart/theme/colors.dart';
 import 'package:flutter/material.dart';
 
 class MyPill extends StatelessWidget {
@@ -24,9 +25,12 @@ class MyPill extends StatelessWidget {
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           decoration: BoxDecoration(
-            color: backgroundColor ?? Colors.white.withValues(alpha: 0.08),
+            color: backgroundColor ?? Colors.white,
             borderRadius: BorderRadius.circular(999),
-            border: BoxBorder.all(width: .5, color: Colors.white),
+            border: BoxBorder.all(
+              width: .5,
+              color: AppColors.of(context).border,
+            ),
           ),
           child: child,
         ),

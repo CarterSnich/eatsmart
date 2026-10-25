@@ -3,19 +3,18 @@ import 'dart:io';
 
 import 'package:eatsmart/components/bubble_button.dart';
 import 'package:eatsmart/components/bubble_search_bar.dart';
-import 'package:eatsmart/components/nav_button.dart';
+import 'package:eatsmart/components/pill.dart';
 import 'package:eatsmart/components/text_button.dart';
 import 'package:eatsmart/generated_assets/assets.dart';
 import 'package:eatsmart/helpers.dart';
 import 'package:eatsmart/main.dart';
-import 'package:eatsmart/screens/about.dart';
 import 'package:eatsmart/screens/fishes.dart';
 import 'package:eatsmart/screens/image.dart';
 import 'package:eatsmart/screens/result.dart';
 import 'package:eatsmart/screens/settings.dart';
+import 'package:eatsmart/theme/dark.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -31,18 +30,16 @@ class ScanPage extends StatefulWidget {
 class _ScanPageState extends State<ScanPage>
     with RouteAware, WidgetsBindingObserver {
   bool _isReady = false;
-  bool _showLoadingOverlay = false;
-
   late PermissionStatus _cameraStatus;
-
   final YOLOViewController _yoloViewController = YOLOViewController();
-
-  Timer? _debounceTimer;
-  int _totalFrames = 0;
-  final List<String> _collectedLabels = [];
-  bool _isCommitting = false;
-
+  Set<String> _labels = {};
   bool _isWaitingAppSettings = false;
+  bool _hasRequestedCapture = false;
+
+  bool _showToggles = false;
+  bool _showOverlays = false;
+  double _confidenceThreshold = .25;
+  double _iouThreshold = .7;
 
   @override
   void initState() {
@@ -58,13 +55,14 @@ class _ScanPageState extends State<ScanPage>
   @override
   void didPushNext() {
     _yoloViewController.pause();
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     super.didPushNext();
   }
 
   @override
   void didPopNext() {
-    _isCommitting = false;
     _yoloViewController.resume();
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
     super.didPopNext();
   }
 
@@ -134,61 +132,33 @@ class _ScanPageState extends State<ScanPage>
   void _onStreamingData(Map<String, dynamic> data) {
     final detections = data['detections'] as List? ?? [];
 
-    final highConfidence = detections
+    final detectedLabels = detections
         .where(
-          (r) =>
-              r['confidence'] >= 0.5 &&
-              (r['className'] != 'other' || r['background']),
+          (r) => (r['className'] != 'other' || r['background'] == 'background'),
         )
         .map((r) => r['className'] as String)
-        .toList();
+        .toSet();
 
-    if (highConfidence.isEmpty) return;
+    if (_hasRequestedCapture) {
+      _hasRequestedCapture = false;
 
-    _totalFrames++;
-    _collectedLabels.addAll(highConfidence);
-
-    if (_debounceTimer == null || _isCommitting) {
-      _debounceTimer = Timer(
-        const Duration(seconds: 5),
-        () => _commitDetections(data['originalImage']),
-      );
-      _showLoadingOverlay = true;
-
-      setState(() {});
-    }
-  }
-
-  void _commitDetections(Uint8List finalFrame) {
-    if (_isCommitting) return;
-
-    final Map<String, int> labelCounts = {};
-
-    for (final label in _collectedLabels) {
-      labelCounts[label] = (labelCounts[label] ?? 0) + 1;
-    }
-
-    final confirmedLabels = labelCounts.entries
-        .where((entry) => entry.value / _totalFrames >= 0.3)
-        .map((entry) => entry.key)
-        .toList();
-
-    _isCommitting = true;
-    _debounceTimer = null;
-    setState(() {});
-
-    _pushResultPage(confirmedLabels, finalFrame);
-  }
-
-  void _pushResultPage(List<String> labels, Uint8List image) {
-    navigatePush(context, ResultPage(labels: labels, image: image), () {
+      if (detectedLabels.isEmpty) {
+        Fluttertoast.showToast(msg: "No fish detected.");
+      } else {
+        _pushResultsPage(detectedLabels, data['originalImage']);
+      }
+    } else {
       setState(() {
-        _showLoadingOverlay = false;
+        _labels = detectedLabels;
       });
-    });
+    }
   }
 
-  Future<void> _pickFromGallery() async {
+  void _onPressCapture() {
+    _hasRequestedCapture = true;
+  }
+
+  void _pickFromGallery() async {
     final imageFile = await ImagePicker().pickImage(
       source: ImageSource.gallery,
     );
@@ -198,6 +168,17 @@ class _ScanPageState extends State<ScanPage>
     }
   }
 
+  void _pushResultsPage(Set<String> labels, Uint8List imageBytes) {
+    navigatePush(
+      context,
+      ResultPage(
+        labels: labels.toList(),
+        imageBytes: imageBytes,
+        imageRotation: 1,
+      ),
+    );
+  }
+
   void _pushDetectionPage(File imageFile) {
     navigatePush(context, ImageDetectPage(imageFile: imageFile));
   }
@@ -205,7 +186,10 @@ class _ScanPageState extends State<ScanPage>
   @override
   Widget build(BuildContext context) {
     if (!_isReady) {
-      return Scaffold(body: Center(child: CircularProgressIndicator()));
+      return Theme(
+        data: ThemeData.dark(useMaterial3: true),
+        child: Scaffold(body: Center(child: CircularProgressIndicator())),
+      );
     }
 
     final Widget streamView;
@@ -225,6 +209,8 @@ class _ScanPageState extends State<ScanPage>
         // onResult: _onResult,
         onStreamingData: _onStreamingData,
         onModelError: _onModelError,
+        confidenceThreshold: _confidenceThreshold,
+        iouThreshold: _iouThreshold,
       );
     } else {
       streamView = Align(
@@ -249,119 +235,225 @@ class _ScanPageState extends State<ScanPage>
       );
     }
 
-    return Scaffold(
-      body: Stack(
-        children: [
-          streamView,
-          Stack(
-            children: [
-              Align(
-                alignment: Alignment.topCenter,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Color.fromARGB(100, 0, 0, 0),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                      top: MediaQuery.viewPaddingOf(context).top + 20,
-                      bottom: 20,
-                      left: 20,
-                      right: 20,
+    return Theme(
+      data: darkMode,
+      child: Scaffold(
+        body: Stack(
+          children: [
+            streamView,
+            Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Color.fromARGB(100, 0, 0, 0),
                     ),
-                    child: Row(
-                      spacing: 10,
-                      children: [
-                        Expanded(
-                          child: Hero(
-                            tag: 'fishes',
-                            child: MyBubbleSearchBar(
-                              onTap: () {
-                                navigatePushHero(context, FishesPage());
-                              },
-                              child: Text(
-                                'Search fish',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        top: MediaQuery.viewPaddingOf(context).top + 20,
+                        bottom: 20,
+                        left: 20,
+                        right: 20,
+                      ),
+                      child: Row(
+                        spacing: 10,
+                        children: [
+                          Expanded(
+                            child: Hero(
+                              tag: 'fishes',
+                              child: MyBubbleSearchBar(
+                                onTap: () {
+                                  navigatePushHero(context, FishesPage());
+                                },
+                                child: Text(
+                                  'Search fish',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                        MyBubbleButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => SettingsPage(),
+                          MyBubbleButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SettingsPage(),
+                                ),
+                              );
+                            },
+                            padding: 12,
+                            child: Icon(
+                              Icons.settings_outlined,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Wrap(
+                          spacing: 4,
+                          runSpacing: 4,
+                          children: List.generate(
+                            _labels.length,
+                            (i) => MyPill(
+                              backgroundColor: Colors.white,
+                              child: Text(
+                                _labels.elementAt(i).toUpperCase(),
+                                style: TextStyle(color: Colors.black),
                               ),
-                            );
-                          },
-                          padding: 12,
-                          child: Icon(
-                            Icons.settings_outlined,
-                            color: Colors.white,
+                            ),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Color.fromARGB(100, 0, 0, 0),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Column(
+                            spacing: _showToggles ? 16 : 0,
+                            children: [
+                              AnimatedSize(
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.linear,
+                                alignment: Alignment.bottomCenter,
+                                child: _showToggles
+                                    ? Column(
+                                        spacing: 8,
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text("Show overlays"),
+                                              Switch(
+                                                value: _showOverlays,
+                                                onChanged: (value) {
+                                                  _yoloViewController
+                                                      .setShowOverlays(value);
+                                                  setState(() {
+                                                    _showOverlays = value;
+                                                  });
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                          Column(
+                                            children: [
+                                              Text(
+                                                "Confidence threshold: ${formatPercentage(_yoloViewController.confidenceThreshold, 0)}",
+                                              ),
+                                              Slider(
+                                                value: _confidenceThreshold,
+                                                max: 1,
+                                                min: 0,
+                                                divisions: 100,
+                                                padding: EdgeInsets.symmetric(
+                                                  vertical: 8,
+                                                  horizontal: 8,
+                                                ),
+                                                onChanged: (v) {
+                                                  _yoloViewController
+                                                      .setConfidenceThreshold(
+                                                        v,
+                                                      );
+                                                  setState(() {
+                                                    _confidenceThreshold = v;
+                                                  });
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                          Column(
+                                            children: [
+                                              Text(
+                                                "IoU threshold: ${formatPercentage(_yoloViewController.iouThreshold, 0)}",
+                                              ),
+                                              Slider(
+                                                value: _iouThreshold,
+                                                max: 1,
+                                                min: 0,
+                                                divisions: 100,
+                                                padding: EdgeInsets.symmetric(
+                                                  vertical: 8,
+                                                  horizontal: 8,
+                                                ),
+                                                onChanged: (v) {
+                                                  _yoloViewController
+                                                      .setIoUThreshold(v);
+                                                  setState(() {
+                                                    _iouThreshold = v;
+                                                  });
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      )
+                                    : const SizedBox.shrink(),
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  MyBubbleButton(
+                                    onPressed: _pickFromGallery,
+                                    padding: 16,
+                                    child: Icon(
+                                      Icons.photo_library_outlined,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
+                                  ),
+                                  MyBubbleButton(
+                                    onPressed: _onPressCapture,
+                                    padding: 20,
+                                    child: Icon(
+                                      Icons.camera,
+                                      color: Colors.white,
+                                      size: 28,
+                                    ),
+                                  ),
+                                  MyBubbleButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _showToggles = !_showToggles;
+                                      });
+                                    },
+                                    padding: 16,
+                                    child: Icon(
+                                      Icons.tune,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ),
-              Wrap(children: []),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Color.fromARGB(100, 0, 0, 0),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        MyBubbleButton(
-                          onPressed: _pickFromGallery,
-                          padding: 16,
-                          child: Icon(
-                            Icons.photo_library_outlined,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                        ),
-                        MyBubbleButton(
-                          onPressed: _pickFromGallery,
-                          padding: 20,
-                          child: Icon(
-                            Icons.camera,
-                            color: Colors.white,
-                            size: 28,
-                          ),
-                        ),
-                        MyBubbleButton(
-                          onPressed: _pickFromGallery,
-                          padding: 16,
-                          child: Icon(
-                            Icons.tune,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          if (_showLoadingOverlay)
-            Container(
-              color: Colors.black.withValues(alpha: 0.3),
-              child: Center(
-                child: SpinKitFadingGrid(color: Colors.white, size: 50.0),
-              ),
+              ],
             ),
-        ],
+          ],
+        ),
       ),
     );
   }

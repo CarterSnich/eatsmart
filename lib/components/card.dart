@@ -1,3 +1,4 @@
+import 'package:eatsmart/theme/colors.dart';
 import 'package:flutter/material.dart';
 
 class MyCard extends StatelessWidget {
@@ -19,12 +20,12 @@ class MyCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: bgColor ?? Colors.white.withValues(alpha: 0.08),
+      color: bgColor ?? Theme.of(context).cardColor,
       clipBehavior: Clip.antiAlias,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
         side: BorderSide(
-          color: Colors.white.withValues(alpha: 0.12),
+          color: AppColors.of(context).border,
           width: borderWidth,
         ),
       ),

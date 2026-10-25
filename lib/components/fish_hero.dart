@@ -42,11 +42,7 @@ class MyFishHero extends StatelessWidget {
             children: [
               Text(
                 popularName,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               Text(binomialName, style: TextStyle(fontStyle: FontStyle.italic)),
             ],

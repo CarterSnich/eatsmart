@@ -34,15 +34,9 @@ class MyFishCard extends StatelessWidget {
                   children: [
                     Text(
                       fish.localNames[0],
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    Text(
-                      fish.binomialName,
-                      style: TextStyle(color: Colors.white),
-                    ),
+                    Text(fish.binomialName),
                     Spacer(),
                     Row(
                       spacing: 8,

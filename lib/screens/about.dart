@@ -44,16 +44,12 @@ class _AboutPageState extends State<AboutPage> {
         Text(
           _appName,
           textAlign: TextAlign.center,
-          style: Theme.of(
-            context,
-          ).textTheme.titleLarge?.copyWith(color: Colors.white),
+          style: Theme.of(context).textTheme.titleLarge,
         ),
         Text(
           _appVersion,
           textAlign: TextAlign.center,
-          style: Theme.of(
-            context,
-          ).textTheme.titleSmall?.copyWith(color: Colors.white),
+          style: Theme.of(context).textTheme.titleSmall,
         ),
         SizedBox(height: 20),
         Text.rich(
@@ -78,9 +74,7 @@ class _AboutPageState extends State<AboutPage> {
               ),
             ],
           ),
-          style: Theme.of(
-            context,
-          ).textTheme.bodyMedium?.copyWith(color: Colors.white),
+          style: Theme.of(context).textTheme.bodyMedium,
         ),
         SizedBox(height: 20),
         MySectionList(

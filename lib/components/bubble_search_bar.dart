@@ -1,3 +1,4 @@
+import 'package:eatsmart/theme/colors.dart';
 import 'package:flutter/material.dart';
 
 class MyBubbleSearchBar extends StatelessWidget {
@@ -17,17 +18,14 @@ class MyBubbleSearchBar extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.08),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
+            color: Theme.of(context).cardColor,
+            border: Border.all(color: AppColors.of(context).border),
             borderRadius: BorderRadius.circular(50),
           ),
           child: Row(
             spacing: 10,
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Icon(Icons.search, color: Colors.white),
-              child,
-            ],
+            children: [Icon(Icons.search), child],
           ),
         ),
       ),

@@ -4,7 +4,6 @@ import 'package:eatsmart/components/sliver_scaffold.dart';
 import 'package:eatsmart/data/fish_data.dart';
 import 'package:eatsmart/models/fish.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class FishesPage extends StatefulWidget {
   const FishesPage({super.key});
@@ -17,23 +16,6 @@ class _FishesPageState extends State<FishesPage> {
   List<FishData> _results = List.from(fishes.values);
 
   @override
-  void initState() {
-    super.initState();
-
-    SystemChrome.setEnabledSystemUIMode(
-      SystemUiMode.manual,
-      overlays: [SystemUiOverlay.top],
-    );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-  }
-
-  @override
   Widget build(BuildContext context) {
     return MySliverScaffold(
       customAppBar: SliverAppBar(
@@ -42,9 +24,8 @@ class _FishesPageState extends State<FishesPage> {
           child: MyBubbleSearchBar(
             child: Expanded(
               child: TextField(
-                style: const TextStyle(color: Colors.white),
                 decoration: const InputDecoration(
-                  hintText: 'Search fish',
+                  hintText: 'Search local name, English name, binomial name',
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.zero,
                   isDense: true,
@@ -83,7 +64,7 @@ class _FishesPageState extends State<FishesPage> {
         floating: true,
         snap: true,
         automaticallyImplyLeading: false,
-        backgroundColor: Color(0xFF08111F),
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       ),
       spacing: 10,
       children: List.generate(

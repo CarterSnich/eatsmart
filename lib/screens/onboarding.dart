@@ -76,7 +76,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
                                           color: Colors.yellow.shade900,
                                         ),
                                       ),
-                                      Text("Welcome aboard"),
+                                      Text(
+                                        "Welcome aboard",
+                                        style: TextStyle(color: Colors.black),
+                                      ),
                                     ],
                                   ),
                                 ),

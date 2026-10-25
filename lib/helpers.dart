@@ -16,6 +16,10 @@ Future<dynamic> navigatePush(
   return route;
 }
 
+String formatPercentage(double n, int precision) {
+  return "${(n * 100).toStringAsFixed(precision)}%";
+}
+
 Future<dynamic> navigatePushHero(BuildContext context, Widget screen) {
   return Navigator.push(
     context,

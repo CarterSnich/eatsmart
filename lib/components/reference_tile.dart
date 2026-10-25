@@ -30,10 +30,7 @@ class MyReferenceTile extends StatelessWidget {
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(name, style: TextStyle(color: Colors.white)),
-                Text(description, style: TextStyle(color: Colors.white)),
-              ],
+              children: [Text(name), Text(description)],
             ),
           ),
         ],

@@ -41,12 +41,24 @@ class _FishPageState extends State<FishPage> {
                   runSpacing: 8,
                   children: List.generate(
                     fish.localNames.length,
-                    (index) => MyPill(child: Text(fish.localNames[index])),
+                    (index) => MyPill(
+                      child: Text(
+                        fish.localNames[index],
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ),
                   ),
                 ),
               ),
               // DESCRIPTION
-              MySection(label: "DESCRIPTION", child: Text(fish.description)),
+              MyNakedSection(
+                label: "DESCRIPTION",
+                child: Text(
+                  fish.description,
+                  textAlign: TextAlign.justify,
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
               // NUTRIENTS
               MyNakedSection(
                 label: "NUTRIENTS",
@@ -102,19 +114,16 @@ class _FishPageState extends State<FishPage> {
                     fish.healthChecks.length,
                     (index) => MyCard(
                       borderWidth: 0,
-                      bgColor: Colors.yellow.shade200,
+                      bgColor: Colors.red.shade100,
                       padding: 10,
                       child: Row(
                         spacing: 8,
                         children: [
-                          Icon(
-                            Icons.error_outline,
-                            color: Colors.yellow.shade900,
-                          ),
+                          Icon(Icons.error_outline, color: Colors.red.shade900),
                           Expanded(
                             child: Text(
                               fish.healthChecks[index],
-                              style: TextStyle(color: Colors.yellow.shade900),
+                              style: TextStyle(color: Colors.red.shade900),
                             ),
                           ),
                         ],

@@ -1,3 +1,4 @@
+import 'package:eatsmart/theme/colors.dart';
 import 'package:flutter/material.dart';
 
 class MyNakedSection extends StatelessWidget {
@@ -53,16 +54,16 @@ class MySection extends StatelessWidget {
           Text(
             label!,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Color(0xFF7DD3FC),
+              color: AppColors.of(context).sectionLabel,
               fontWeight: FontWeight.bold,
             ),
           ),
         Material(
-          color: Colors.white.withValues(alpha: 0.08),
+          color: Theme.of(context).cardColor,
           clipBehavior: Clip.antiAlias,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
-            side: BorderSide(color: Colors.white.withValues(alpha: 0.12)),
+            side: BorderSide(color: AppColors.of(context).border),
           ),
           child: Padding(padding: EdgeInsets.all(padding), child: child),
         ),
