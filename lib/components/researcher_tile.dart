@@ -1,5 +1,5 @@
-import 'package:eatsmart/components/section.dart';
 import 'package:flutter/material.dart';
+import 'package:isdasmart/components/section.dart';
 
 class MyResearcherTile extends StatelessWidget {
   final String initials;

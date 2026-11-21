@@ -1,8 +1,8 @@
-import 'package:eatsmart/components/card.dart';
-import 'package:eatsmart/helpers.dart';
-import 'package:eatsmart/models/fish.dart';
-import 'package:eatsmart/screens/fish.dart';
 import 'package:flutter/material.dart';
+import 'package:isdasmart/components/card.dart';
+import 'package:isdasmart/helpers.dart';
+import 'package:isdasmart/models/fish.dart';
+import 'package:isdasmart/screens/fish.dart';
 
 class MyFishCard extends StatelessWidget {
   final FishData fish;
@@ -33,7 +33,7 @@ class MyFishCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      fish.localNames[0],
+                      fish.popularName,
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     Text(fish.binomialName),

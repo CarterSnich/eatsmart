@@ -1,10 +1,9 @@
-import 'package:eatsmart/components/reference_tile.dart';
-import 'package:eatsmart/components/researcher_tile.dart';
-import 'package:eatsmart/data/about_data.dart';
-import 'package:eatsmart/components/section.dart';
-import 'package:eatsmart/components/sliver_scaffold.dart';
 import 'package:flutter/material.dart';
-
+import 'package:isdasmart/components/reference_tile.dart';
+import 'package:isdasmart/components/researcher_tile.dart';
+import 'package:isdasmart/components/section.dart';
+import 'package:isdasmart/components/sliver_scaffold.dart';
+import 'package:isdasmart/data/about_data.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class AboutPage extends StatefulWidget {
@@ -54,7 +53,7 @@ class _AboutPageState extends State<AboutPage> {
         SizedBox(height: 20),
         Text.rich(
           TextSpan(
-            text: 'EatSmart is a mobile application developed at ',
+            text: 'isdasmart is a mobile application developed at ',
             children: [
               TextSpan(
                 text: 'Leyte Normal University',

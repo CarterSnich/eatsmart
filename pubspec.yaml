@@ -1,4 +1,4 @@
-name: eatsmart
+name: isdasmart
 description: "A new Flutter project."
 publish_to: "none"
 
@@ -29,6 +29,7 @@ dependencies:
   permission_handler: ^11.3.1
   flutter_spinkit: ^5.2.2
   provider: ^6.1.5+1
+  flutter_toggle_tab: ^2.0.0
 
 dev_dependencies:
   flutter_test:
@@ -37,12 +38,16 @@ dev_dependencies:
   flutter_launcher_icons: ^0.14.4
   plugin_platform_interface: ^2.1.8
   path_provider_platform_interface: ^2.1.3
+  rename_app: ^1.6.6
+  change_app_package_name: ^1.5.0
 
 flutter:
   uses-material-design: true
   assets:
     - assets/fish_images/Chanos chanos.jpg
     - assets/fish_images/Katsuwonus pelamis.jpg
+    - assets/fish_images/Leiognathus equula.jpg
+    - assets/fish_images/Mene maculata.jpg
     - assets/fish_images/Nemipterus celebicus.jpg
     - assets/fish_images/Neostethus thessa.jpg
     - assets/fish_images/Oreochromis niloticus.jpg
@@ -55,8 +60,10 @@ flutter:
     - assets/icon_brandings/Ultralytics_YOLO_Icon.png
     - assets/icon_brandings/fishbase_logo.png
     - assets/icon_brandings/flutter_icon.png
-    - assets/model.tflite
+    - assets/fish.tflite
+    - assets/freshness.tflite
     - assets/splash.png
+    - assets/famicons--scan.png
 
   fonts:
     - family: "Commissioner"
@@ -65,3 +72,21 @@ flutter:
           weight: 400
         - asset: assets/Commissioner/Commissioner-Bold.ttf
           weight: 700
+
+flutter_assets_generator:
+  enable: true
+  output_dir: generated/
+  output_filename: assets
+  class_name: Assets
+  auto_detection: true
+  # Automatically add missing dependencies (rive, flutter_svg, lottie) default: true
+  auto_add_dependencies: true
+  # Options: robust (default), legacy (old style)
+  style: robust
+  # Leaf type: class (typed wrappers, default for robust) or string (raw path, default for legacy)
+  leaf_type: class
+  # Options: camel (default), snake
+  name_style: camel
+  package_parameter_enabled: false
+  named_with_parent: true
+  path_ignore: [ ]

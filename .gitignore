@@ -47,3 +47,7 @@ app.*.map.json
 \lib\assets.preview.dart
 \generated_assets\assets.preview.dart
 \lib/generated_assets\assets.preview.dart
+# Widget Preview related
+.widget_preview/
+
+./*.apk

@@ -1,6 +1,6 @@
-import 'package:eatsmart/theme/dark.dart';
-import 'package:eatsmart/theme/light.dart';
 import 'package:flutter/material.dart';
+import 'package:isdasmart/theme/dark.dart';
+import 'package:isdasmart/theme/light.dart';
 
 class AppColors {
   final Color border;

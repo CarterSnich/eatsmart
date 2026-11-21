@@ -1,11 +1,11 @@
-import 'package:eatsmart/components/animated_circles.dart';
-import 'package:eatsmart/components/card.dart';
-import 'package:eatsmart/components/pill.dart';
-import 'package:eatsmart/components/text_button.dart';
-import 'package:eatsmart/screens/scan.dart';
-import 'package:eatsmart/data/welcome_messages_data.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:isdasmart/components/animated_circles.dart';
+import 'package:isdasmart/components/button.dart';
+import 'package:isdasmart/components/card.dart';
+import 'package:isdasmart/components/pill.dart';
+import 'package:isdasmart/data/welcome_messages_data.dart';
+import 'package:isdasmart/screens/scan.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class OnboardingPage extends StatefulWidget {
@@ -139,9 +139,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
               Row(
                 spacing: 10.0,
                 children: [
-                  MyTextButton(onPress: _navigate, text: "Skip"),
+                  MyButton(onPress: _navigate, text: "Skip"),
                   Expanded(
-                    child: MyTextButton(
+                    child: MyButton(
                       onPress: () {
                         if (_currentQouteIndex == welcomeMessages.length - 1) {
                           _navigate();

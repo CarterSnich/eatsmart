@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 class MyBubbleButton extends StatelessWidget {
   final Widget child;
-  final VoidCallback onPressed;
+  final VoidCallback onPress;
   final double padding;
 
   const MyBubbleButton({
     super.key,
     required this.child,
-    required this.onPressed,
+    required this.onPress,
     this.padding = 8.0,
   });
 
@@ -19,11 +19,11 @@ class MyBubbleButton extends StatelessWidget {
       shape: const CircleBorder(),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
-        onTap: onPressed,
+        onTap: onPress,
         child: Container(
           padding: EdgeInsets.all(padding),
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.08),
+            color: Colors.black.withValues(alpha: 0.25),
             border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
             shape: BoxShape.circle,
           ),

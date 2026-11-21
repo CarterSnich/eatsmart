@@ -1,11 +1,11 @@
-import 'package:eatsmart/components/card.dart';
-import 'package:eatsmart/components/fish_hero.dart';
-import 'package:eatsmart/components/pill.dart';
-import 'package:eatsmart/components/section.dart';
-import 'package:eatsmart/components/sliver_scaffold.dart';
-import 'package:eatsmart/data/nutrients_metadata.dart';
-import 'package:eatsmart/models/fish.dart';
 import 'package:flutter/material.dart';
+import 'package:isdasmart/components/card.dart';
+import 'package:isdasmart/components/fish_hero.dart';
+import 'package:isdasmart/components/pill.dart';
+import 'package:isdasmart/components/section.dart';
+import 'package:isdasmart/components/sliver_scaffold.dart';
+import 'package:isdasmart/data/nutrients_metadata.dart';
+import 'package:isdasmart/models/fish.dart';
 
 class FishPage extends StatefulWidget {
   final FishData fish;
@@ -111,7 +111,7 @@ class _FishPageState extends State<FishPage> {
                 child: Column(
                   spacing: 10,
                   children: List.generate(
-                    fish.healthChecks.length,
+                    fish.healthRisks.length,
                     (index) => MyCard(
                       borderWidth: 0,
                       bgColor: Colors.red.shade100,
@@ -122,7 +122,7 @@ class _FishPageState extends State<FishPage> {
                           Icon(Icons.error_outline, color: Colors.red.shade900),
                           Expanded(
                             child: Text(
-                              fish.healthChecks[index],
+                              fish.healthRisks[index],
                               style: TextStyle(color: Colors.red.shade900),
                             ),
                           ),

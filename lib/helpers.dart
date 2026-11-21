@@ -1,6 +1,5 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:ultralytics_yolo/yolo.dart';
 
 Future<dynamic> navigatePush(
@@ -53,4 +52,16 @@ Future<List<String>> predict(YOLO model, Uint8List imageBytes) async {
       .toList();
 
   return labels;
+}
+
+void showNotifBar(BuildContext context) {
+  final isLight = Theme.of(context).brightness == Brightness.light;
+
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  SystemChrome.setSystemUIOverlayStyle(
+    SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: isLight ? Brightness.dark : Brightness.light,
+    ),
+  );
 }

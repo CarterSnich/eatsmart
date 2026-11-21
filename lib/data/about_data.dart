@@ -1,5 +1,5 @@
-import 'package:eatsmart/generated_assets/assets.dart';
 import 'package:flutter/material.dart';
+import 'package:isdasmart/generated_assets/assets.dart';
 
 final List<dynamic> researchers = [
   {
@@ -50,7 +50,7 @@ final List<Map<String, String>> references = [
     "icon": Assets.iconBrandingsFlutterIcon,
     "name": "Flutter",
     "description":
-        "Google's open-source UI framework used to develop the EatSmart mobile application and its user interface from a single codebase.",
+        "Google's open-source UI framework used to develop the isdasmart mobile application and its user interface from a single codebase.",
   },
   {
     "icon": Assets.iconBrandingsUltralyticsYoloIcon,

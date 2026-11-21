@@ -1,30 +1,25 @@
 import 'package:flutter/material.dart';
 
 class MyTextButton extends StatelessWidget {
-  const MyTextButton({
-    super.key,
-    required this.onPress,
-    required this.text,
-    this.foregroundColor,
-    this.backgroundColor,
-  });
-
-  final void Function() onPress;
+  final VoidCallback onPress;
   final String text;
-  final Color? backgroundColor;
-  final Color? foregroundColor;
+
+  const MyTextButton({super.key, required this.text, required this.onPress});
 
   @override
   Widget build(BuildContext context) {
-    return TextButton(
-      onPressed: onPress,
-      style: TextButton.styleFrom(
-        backgroundColor: backgroundColor ?? Colors.white,
-        foregroundColor: foregroundColor ?? Colors.black,
-        side: BorderSide(color: Colors.grey.shade300),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onPress,
+        highlightColor: Colors.transparent,
+        splashColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        child: Text(
+          text,
+          style: TextStyle(fontSize: 16, color: Theme.of(context).primaryColor),
+        ),
       ),
-      child: Text(text),
     );
   }
 }

@@ -1,5 +1,5 @@
-import 'package:eatsmart/theme/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:isdasmart/theme/colors.dart';
 
 class MyNakedSection extends StatelessWidget {
   final Widget child;
@@ -63,7 +63,7 @@ class MySection extends StatelessWidget {
           clipBehavior: Clip.antiAlias,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
-            side: BorderSide(color: AppColors.of(context).border),
+            side: BorderSide(color: AppColors.of(context).border, width: 2),
           ),
           child: Padding(padding: EdgeInsets.all(padding), child: child),
         ),
@@ -76,12 +76,14 @@ class MySectionList extends StatelessWidget {
   final List<Widget> children;
   final String? label;
   final double padding;
+  final bool useDividers;
 
   const MySectionList({
     super.key,
     required this.children,
     this.label,
     this.padding = 0,
+    this.useDividers = true,
   });
 
   @override
@@ -91,7 +93,15 @@ class MySectionList extends StatelessWidget {
       padding: padding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: children,
+        children: useDividers
+            ? [
+                for (int i = 0; i < children.length; i++) ...[
+                  if (i > 0)
+                    Divider(height: 1, color: AppColors.of(context).border),
+                  children[i],
+                ],
+              ]
+            : children,
       ),
     );
   }

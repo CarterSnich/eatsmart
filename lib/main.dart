@@ -1,11 +1,11 @@
-import 'package:eatsmart/screens/onboarding.dart';
-import 'package:eatsmart/screens/scan.dart';
-import 'package:eatsmart/theme/dark.dart';
-import 'package:eatsmart/theme/light.dart';
-import 'package:eatsmart/theme/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:isdasmart/screens/onboarding.dart';
+import 'package:isdasmart/screens/scan.dart';
+import 'package:isdasmart/theme/dark.dart';
+import 'package:isdasmart/theme/light.dart';
+import 'package:isdasmart/theme/provider.dart';
 import 'package:provider/provider.dart';
 
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
@@ -39,7 +39,7 @@ class App extends StatelessWidget {
       create: (_) => ThemeProvider(themeMode: themeMode),
       child: Consumer<ThemeProvider>(
         builder: (context, theme, _) => MaterialApp(
-          title: "EatSmart",
+          title: "IsdaSmart",
           themeMode: theme.themeMode,
           theme: lightMode,
           darkTheme: darkMode,

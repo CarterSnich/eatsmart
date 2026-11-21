@@ -1,4 +1,4 @@
-package com.example.eatsmart
+package com.cartersnich.isdasmart
 
 import io.flutter.embedding.android.FlutterActivity
 

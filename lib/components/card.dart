@@ -1,5 +1,5 @@
-import 'package:eatsmart/theme/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:isdasmart/theme/colors.dart';
 
 class MyCard extends StatelessWidget {
   final double radius;

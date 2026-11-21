@@ -1,7 +1,7 @@
 // This is a basic Flutter widget test.
 //
 // To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
+// utility in the flutter_test package. For cartersnich, you can send tap and scroll
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
@@ -9,18 +9,18 @@
 
 import 'dart:io';
 
-import 'package:eatsmart/data/fish_data.dart';
-import 'package:eatsmart/models/fish.dart';
-import 'package:eatsmart/screens/about.dart';
-import 'package:eatsmart/screens/fish.dart';
-import 'package:eatsmart/screens/fishes.dart';
-import 'package:eatsmart/screens/image.dart';
-import 'package:eatsmart/screens/onboarding.dart';
-import 'package:eatsmart/screens/scan.dart';
-import 'package:eatsmart/screens/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:isdasmart/data/fish_data.dart';
+import 'package:isdasmart/models/fish.dart';
+import 'package:isdasmart/screens/about.dart';
+import 'package:isdasmart/screens/fish.dart';
+import 'package:isdasmart/screens/fishes.dart';
+import 'package:isdasmart/screens/image.dart';
+import 'package:isdasmart/screens/onboarding.dart';
+import 'package:isdasmart/screens/scan.dart';
+import 'package:isdasmart/screens/settings.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 

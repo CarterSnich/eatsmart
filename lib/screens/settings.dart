@@ -1,16 +1,16 @@
 import 'dart:io';
 
-import 'package:eatsmart/components/dialog.dart';
-import 'package:eatsmart/components/section.dart';
-import 'package:eatsmart/components/settings_item.dart';
-import 'package:eatsmart/components/sliver_scaffold.dart';
-import 'package:eatsmart/helpers.dart';
-import 'package:eatsmart/screens/about.dart';
-import 'package:eatsmart/theme/provider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:isdasmart/components/dialog.dart';
+import 'package:isdasmart/components/section.dart';
+import 'package:isdasmart/components/settings_item.dart';
+import 'package:isdasmart/components/sliver_scaffold.dart';
+import 'package:isdasmart/helpers.dart';
+import 'package:isdasmart/screens/about.dart';
+import 'package:isdasmart/theme/provider.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_loading_dialog/simple_loading_dialog.dart';
@@ -22,12 +22,14 @@ class SettingsPage extends StatefulWidget {
   State<SettingsPage> createState() => _SettingsPageState();
 }
 
-class _SettingsPageState extends State<SettingsPage> {
+class _SettingsPageState extends State<SettingsPage>
+    with RouteAware, WidgetsBindingObserver {
   final _storage = GetStorage();
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    showNotifBar(context);
   }
 
   Future<String?> _pickAndCopyFile() async {
@@ -50,14 +52,25 @@ class _SettingsPageState extends State<SettingsPage> {
     return result.name;
   }
 
-  void _clickModelPathItem(BuildContext context) async {
+  void _clickFishModelPathItem(BuildContext context) async {
     final newModelPath = await showSimpleLoadingDialog<String?>(
       context: context,
       future: _pickAndCopyFile,
     );
 
     if (newModelPath == null) return;
-    await _storage.write("model_path", newModelPath);
+    await _storage.write("fish_model_path", newModelPath);
+    setState(() {});
+  }
+
+  void _clickFreshnessModelPathItem(BuildContext context) async {
+    final newModelPath = await showSimpleLoadingDialog<String?>(
+      context: context,
+      future: _pickAndCopyFile,
+    );
+
+    if (newModelPath == null) return;
+    await _storage.write("freshness_model_path", newModelPath);
     setState(() {});
   }
 
@@ -98,9 +111,15 @@ class _SettingsPageState extends State<SettingsPage> {
           padding: 0,
           children: [
             MySettingsItem(
-              label: "Model path",
-              description: _storage.read("model_path") ?? "Default model",
-              onPress: () => _clickModelPathItem(context),
+              label: "Identification model path",
+              description: _storage.read("fish_model_path") ?? "Default model",
+              onPress: () => _clickFishModelPathItem(context),
+            ),
+            MySettingsItem(
+              label: "Freshness model path",
+              description:
+                  _storage.read("freshness_model_path") ?? "Default model",
+              onPress: () => _clickFreshnessModelPathItem(context),
             ),
           ],
         ),
@@ -108,7 +127,7 @@ class _SettingsPageState extends State<SettingsPage> {
           label: "ABOUT",
           children: [
             MySettingsItem(
-              label: "About EatSmart",
+              label: "About isdasmart",
               description: "Learn more about the app",
               onPress: () => navigatePush(context, AboutPage()),
             ),

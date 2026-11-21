@@ -1,5 +1,5 @@
-import 'package:eatsmart/components/card.dart';
 import 'package:flutter/material.dart';
+import 'package:isdasmart/components/card.dart';
 
 class MyNutritionCard extends StatelessWidget {
   final IconData iconData;

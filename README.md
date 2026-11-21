@@ -1,4 +1,4 @@
-# eatsmart
+# isdasmart
 
 A new Flutter project.
 

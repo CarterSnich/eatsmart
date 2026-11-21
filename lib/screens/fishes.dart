@@ -1,9 +1,10 @@
-import 'package:eatsmart/components/bubble_search_bar.dart';
-import 'package:eatsmart/components/fish_card.dart';
-import 'package:eatsmart/components/sliver_scaffold.dart';
-import 'package:eatsmart/data/fish_data.dart';
-import 'package:eatsmart/models/fish.dart';
 import 'package:flutter/material.dart';
+import 'package:isdasmart/components/bubble_search_bar.dart';
+import 'package:isdasmart/components/fish_card.dart';
+import 'package:isdasmart/components/sliver_scaffold.dart';
+import 'package:isdasmart/data/fish_data.dart';
+import 'package:isdasmart/helpers.dart';
+import 'package:isdasmart/models/fish.dart';
 
 class FishesPage extends StatefulWidget {
   const FishesPage({super.key});
@@ -16,9 +17,40 @@ class _FishesPageState extends State<FishesPage> {
   List<FishData> _results = List.from(fishes.values);
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    showNotifBar(context);
+  }
+
+  void _onTextChange(String query) {
+    setState(() {
+      _results = fishes.values.where((fish) {
+        final q = query.toLowerCase();
+        final hasEnglishName = fish.englishName.toLowerCase().contains(q);
+        final hasBinomialName = fish.binomialName.toLowerCase().contains(q);
+        final hasPopularName = fish.popularName.toLowerCase().contains(q);
+
+        bool hasLocalName = false;
+        for (var ln in fish.localNames) {
+          hasLocalName = ln.toLowerCase().contains(q);
+          if (hasLocalName) break;
+        }
+
+        return hasEnglishName ||
+            hasBinomialName ||
+            hasPopularName ||
+            hasLocalName;
+      }).toList();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MySliverScaffold(
       customAppBar: SliverAppBar(
+        pinned: true,
+        surfaceTintColor: Theme.of(context).scaffoldBackgroundColor,
+        shadowColor: Theme.of(context).scaffoldBackgroundColor,
         title: Hero(
           tag: 'fishes',
           child: MyBubbleSearchBar(
@@ -30,33 +62,7 @@ class _FishesPageState extends State<FishesPage> {
                   contentPadding: EdgeInsets.zero,
                   isDense: true,
                 ),
-                onChanged: (query) {
-                  setState(() {
-                    _results = fishes.values.where((fish) {
-                      final q = query.toLowerCase();
-                      final hasEnglishName = fish.englishName
-                          .toLowerCase()
-                          .contains(q);
-                      final hasBinomialName = fish.binomialName
-                          .toLowerCase()
-                          .contains(q);
-                      final hasPopularName = fish.popularName
-                          .toLowerCase()
-                          .contains(q);
-
-                      bool hasLocalName = false;
-                      for (var ln in fish.localNames) {
-                        hasLocalName = ln.toLowerCase().contains(q);
-                        if (hasLocalName) break;
-                      }
-
-                      return hasEnglishName ||
-                          hasBinomialName ||
-                          hasPopularName ||
-                          hasLocalName;
-                    }).toList();
-                  });
-                },
+                onChanged: _onTextChange,
               ),
             ),
           ),

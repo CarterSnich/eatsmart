@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:isdasmart/components/text_button.dart';
 
 class MySliverScaffold extends StatelessWidget {
   final String? title;
@@ -27,14 +28,34 @@ class MySliverScaffold extends StatelessWidget {
               customAppBar!
             else if (title != null)
               SliverAppBar(
-                title: Text(
-                  title!,
-                  style: Theme.of(context).textTheme.headlineLarge,
+                title: IntrinsicHeight(
+                  child: Stack(
+                    children: [
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: MyTextButton(
+                          text: "Back",
+                          onPress: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                          title!,
+                          style: Theme.of(context).textTheme.headlineLarge,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                floating: true,
-                snap: true,
+                pinned: true,
                 automaticallyImplyLeading: false,
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                surfaceTintColor: Theme.of(context).scaffoldBackgroundColor,
+                shadowColor: Theme.of(context).scaffoldBackgroundColor,
               ),
             SliverPadding(
               padding: EdgeInsets.all(padding),
