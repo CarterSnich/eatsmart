@@ -4,7 +4,9 @@ import 'package:isdasmart/components/fish_hero.dart';
 import 'package:isdasmart/components/pill.dart';
 import 'package:isdasmart/components/section.dart';
 import 'package:isdasmart/components/sliver_scaffold.dart';
+import 'package:isdasmart/components/text_button.dart';
 import 'package:isdasmart/data/nutrients_metadata.dart';
+import 'package:isdasmart/helpers.dart';
 import 'package:isdasmart/models/fish.dart';
 
 class FishPage extends StatefulWidget {
@@ -18,10 +20,17 @@ class FishPage extends StatefulWidget {
 
 class _FishPageState extends State<FishPage> {
   @override
+  void didChangeDependencies() {
+    showNotifBar(context);
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final FishData fish = widget.fish;
 
     return MySliverScaffold(
+      title: fish.popularName,
       padding: 0,
       children: [
         MyFishHero(
@@ -131,6 +140,10 @@ class _FishPageState extends State<FishPage> {
                     ),
                   ),
                 ),
+              ),
+              MyTextButton(
+                text: "FishBase source",
+                onPress: () => openLink(fish.source),
               ),
             ],
           ),

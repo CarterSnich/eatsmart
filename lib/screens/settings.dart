@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:isdasmart/components/dialog.dart';
 import 'package:isdasmart/components/section.dart';
 import 'package:isdasmart/components/settings_item.dart';
@@ -24,8 +23,6 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage>
     with RouteAware, WidgetsBindingObserver {
-  final _storage = GetStorage();
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -49,7 +46,7 @@ class _SettingsPageState extends State<SettingsPage>
     final destination = '${appDir.path}/${result.name}';
     file.copySync(destination);
 
-    return result.name;
+    return destination;
   }
 
   void _clickFishModelPathItem(BuildContext context) async {
@@ -59,7 +56,7 @@ class _SettingsPageState extends State<SettingsPage>
     );
 
     if (newModelPath == null) return;
-    await _storage.write("fish_model_path", newModelPath);
+    await storageWrite("fish_model_path", newModelPath);
     setState(() {});
   }
 
@@ -70,7 +67,7 @@ class _SettingsPageState extends State<SettingsPage>
     );
 
     if (newModelPath == null) return;
-    await _storage.write("freshness_model_path", newModelPath);
+    await storageWrite("freshness_model_path", newModelPath);
     setState(() {});
   }
 
@@ -112,14 +109,62 @@ class _SettingsPageState extends State<SettingsPage>
           children: [
             MySettingsItem(
               label: "Identification model path",
-              description: _storage.read("fish_model_path") ?? "Default model",
+              description: storageRead<String>(
+                "fish_model_path",
+                "Default model",
+              ).split("/").last,
               onPress: () => _clickFishModelPathItem(context),
             ),
             MySettingsItem(
               label: "Freshness model path",
-              description:
-                  _storage.read("freshness_model_path") ?? "Default model",
+              description: storageRead<String>(
+                "freshness_model_path",
+                "Default model",
+              ).split("/").last,
               onPress: () => _clickFreshnessModelPathItem(context),
+            ),
+          ],
+        ),
+        MySectionList(
+          label: "DETECTION",
+          padding: 0,
+          children: [
+            MySettingsSwitchItem(
+              label: "Show overlays",
+              value: storageRead("show_overlays", false),
+              description: storageRead("show_overlays", false)
+                  ? "Overlays are showing"
+                  : "Overlays are not showing",
+              onChange: (value) {
+                storageWrite("show_overlays", value);
+                setState(() {});
+              },
+            ),
+            MySettingsSliderItem(
+              label: "Confidence threshold",
+              value: storageRead("confidence_threshold", .25),
+              onChange: (value) {
+                storageWrite("confidence_threshold", value);
+                setState(() {});
+              },
+              sliderLabelBuilder: (context, value) =>
+                  Text(formatPercentage(value, 0)),
+              min: 0,
+              max: 1,
+              divisions: 100,
+            ),
+            MySettingsSliderItem(
+              label: "IoU threshold",
+              value: storageRead("iou_threshold", .7),
+              onChange: (value) {
+                storageWrite("iou_threshold", value);
+                setState(() {});
+              },
+              sliderLabelBuilder: (context, value) =>
+                  Text(formatPercentage(value, 0)),
+              min: 0,
+              max: 1,
+              divisions: 100,
             ),
           ],
         ),
@@ -127,7 +172,7 @@ class _SettingsPageState extends State<SettingsPage>
           label: "ABOUT",
           children: [
             MySettingsItem(
-              label: "About isdasmart",
+              label: "About IsdaSmart",
               description: "Learn more about the app",
               onPress: () => navigatePush(context, AboutPage()),
             ),

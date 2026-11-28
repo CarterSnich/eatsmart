@@ -49,7 +49,7 @@ android {
 
         debug {
             applicationIdSuffix = ".debug"
-            resValue("string", "app_name", "[debug]IsdaSmart")
+            resValue("string", "app_name", "IsdaSmart Dev")
         }
     }
 }

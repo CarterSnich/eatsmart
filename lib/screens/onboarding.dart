@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:isdasmart/components/animated_circles.dart';
 import 'package:isdasmart/components/button.dart';
 import 'package:isdasmart/components/card.dart';
@@ -7,6 +6,8 @@ import 'package:isdasmart/components/pill.dart';
 import 'package:isdasmart/data/welcome_messages_data.dart';
 import 'package:isdasmart/screens/scan.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+
+import '../helpers.dart';
 
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({super.key});
@@ -19,7 +20,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   int _currentQouteIndex = 0;
 
   void _navigate() async {
-    await GetStorage().write("is_first_launch", false);
+    await storageWrite("is_first_launch", false);
 
     if (mounted) {
       Navigator.pushReplacement(
@@ -48,6 +49,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: MyCard(
+                    bgColor: Colors.blue.shade50,
                     radius: 32,
                     borderWidth: 0,
                     padding: 10,
@@ -99,7 +101,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
                             welcomeMessages[_currentQouteIndex]['headline']!,
                             textAlign: TextAlign.left,
                             style: Theme.of(context).textTheme.headlineLarge
-                                ?.copyWith(fontWeight: FontWeight.bold),
+                                ?.copyWith(fontWeight: FontWeight.bold)
+                                .copyWith(color: Colors.black),
                             key: ValueKey(
                               welcomeMessages[_currentQouteIndex]['headline']!,
                             ),
@@ -110,7 +113,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                           child: Text(
                             welcomeMessages[_currentQouteIndex]['body']!,
                             style: Theme.of(context).textTheme.bodyLarge
-                                ?.copyWith(color: Colors.white),
+                                ?.copyWith(color: Colors.black),
                             key: ValueKey(
                               welcomeMessages[_currentQouteIndex]['body']!,
                             ),

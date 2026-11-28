@@ -8,6 +8,8 @@ import 'package:isdasmart/theme/light.dart';
 import 'package:isdasmart/theme/provider.dart';
 import 'package:provider/provider.dart';
 
+import 'helpers.dart';
+
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
 void main() async {
@@ -15,8 +17,10 @@ void main() async {
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   await GetStorage.init();
-  final bool isFirstLaunch = GetStorage().read("is_first_launch") ?? true;
-  final ThemeMode themeMode = switch (GetStorage().read<int>("theme_mode")) {
+
+  final bool isFirstLaunch = storageRead<bool>("is_first_launch", true);
+  final themeModeIndex = storageRead<int>("theme_mode", ThemeMode.system.index);
+  final ThemeMode themeMode = switch (themeModeIndex) {
     1 => ThemeMode.light,
     2 => ThemeMode.dark,
     _ => ThemeMode.system,

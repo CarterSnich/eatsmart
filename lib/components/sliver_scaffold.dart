@@ -2,19 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:isdasmart/components/text_button.dart';
 
 class MySliverScaffold extends StatelessWidget {
-  final String? title;
+  final String title;
   final List<Widget> children;
-  final SliverAppBar? customAppBar;
   final double spacing;
   final double padding;
+  final Widget? stickyBottom;
+  final double stickyBottomHeight;
 
   const MySliverScaffold({
     super.key,
-    this.title,
+    required this.title,
     required this.children,
-    this.customAppBar,
     this.spacing = 0,
     this.padding = 20,
+    this.stickyBottom,
+    this.stickyBottomHeight = 0,
   });
 
   @override
@@ -24,39 +26,46 @@ class MySliverScaffold extends StatelessWidget {
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
-            if (customAppBar != null)
-              customAppBar!
-            else if (title != null)
-              SliverAppBar(
-                title: IntrinsicHeight(
-                  child: Stack(
-                    children: [
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: MyTextButton(
-                          text: "Back",
-                          onPress: () {
-                            Navigator.pop(context);
-                          },
-                        ),
+            SliverAppBar(
+              title: IntrinsicHeight(
+                child: Stack(
+                  children: [
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: MyTextButton(
+                        text: "Back",
+                        onPress: () {
+                          Navigator.pop(context);
+                        },
                       ),
-                      Align(
-                        alignment: Alignment.center,
-                        child: Text(
-                          title!,
-                          style: Theme.of(context).textTheme.headlineLarge,
-                          textAlign: TextAlign.center,
-                        ),
+                    ),
+                    Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        title,
+                        style: Theme.of(context).textTheme.headlineLarge,
+                        textAlign: TextAlign.center,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                pinned: true,
-                automaticallyImplyLeading: false,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                surfaceTintColor: Theme.of(context).scaffoldBackgroundColor,
-                shadowColor: Theme.of(context).scaffoldBackgroundColor,
               ),
+              pinned: true,
+              automaticallyImplyLeading: false,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              surfaceTintColor: Theme.of(context).scaffoldBackgroundColor,
+              shadowColor: Theme.of(context).scaffoldBackgroundColor,
+              bottom: stickyBottom == null
+                  ? null
+                  : PreferredSize(
+                      preferredSize: Size.fromHeight(stickyBottomHeight),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: padding),
+                        child: stickyBottom!,
+                      ),
+                    ),
+            ),
+
             SliverPadding(
               padding: EdgeInsets.all(padding),
               sliver: SliverList(

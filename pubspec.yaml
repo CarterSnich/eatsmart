@@ -30,6 +30,7 @@ dependencies:
   flutter_spinkit: ^5.2.2
   provider: ^6.1.5+1
   flutter_toggle_tab: ^2.0.0
+  url_launcher: ^6.3.3
 
 dev_dependencies:
   flutter_test:

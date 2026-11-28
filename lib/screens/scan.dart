@@ -5,12 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_toggle_tab/flutter_toggle_tab.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:isdasmart/components/bubble_button.dart';
 import 'package:isdasmart/components/button.dart';
 import 'package:isdasmart/components/pill.dart';
-import 'package:isdasmart/generated_assets/assets.dart';
+import 'package:isdasmart/generated/assets.dart';
 import 'package:isdasmart/helpers.dart';
 import 'package:isdasmart/main.dart';
 import 'package:isdasmart/screens/fishes.dart';
@@ -33,23 +32,21 @@ class _ScanPageState extends State<ScanPage>
   bool _isReady = false;
 
   final _scanningMode = ValueNotifier<int>(0);
+  final _hasRequestedCapture = ValueNotifier(false);
 
   final YOLOViewController _yoloViewController = YOLOViewController();
   Set<String> _labels = {};
 
   late PermissionStatus _cameraStatus;
   bool _isWaitingAppSettings = false;
-  bool _hasRequestedCapture = false;
 
   bool _showToggles = false;
-  bool _showOverlays = false;
-  double _confidenceThreshold = .25;
-  double _iouThreshold = .7;
-
-  final fishModelPath =
-      GetStorage().read<String>("fish_model_path") ?? Assets.fish;
-  final freshnessModelPath =
-      GetStorage().read<String>("freshness_model_path") ?? Assets.freshness;
+  bool _showOverlays = storageRead<bool>("show_overlays", false);
+  double _confidenceThreshold = storageRead<double>(
+    "confidence_threshold",
+    .25,
+  );
+  double _iouThreshold = storageRead<double>("iou_threshold", .7);
 
   bool _isLoadingModel = false;
 
@@ -59,15 +56,13 @@ class _ScanPageState extends State<ScanPage>
     WidgetsBinding.instance.addObserver(this);
 
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-    SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.dark,
-      ),
-    );
 
     _initCameraStatus();
-    _yoloViewController.setShowOverlays(false);
+    _yoloViewController.setShowOverlays(_showOverlays);
+    _yoloViewController.setThresholds(
+      confidenceThreshold: _confidenceThreshold,
+      iouThreshold: _iouThreshold,
+    );
   }
 
   @override
@@ -78,8 +73,9 @@ class _ScanPageState extends State<ScanPage>
 
   @override
   void didPopNext() {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     _yoloViewController.resume();
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+    _onSwitchMode(_scanningMode.value);
     super.didPopNext();
   }
 
@@ -92,6 +88,7 @@ class _ScanPageState extends State<ScanPage>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
       _getCameraStatus();
       setState(() {
         _isWaitingAppSettings = false;
@@ -147,7 +144,7 @@ class _ScanPageState extends State<ScanPage>
     Fluttertoast.showToast(msg: "${error.toString()}: $modelPath");
   }
 
-  void _onStreamingData(Map<String, dynamic> data) {
+  void _onStreamingData(Map<String, dynamic> data) async {
     final detections = data['detections'] as List? ?? [];
 
     final detectedLabels = detections
@@ -157,13 +154,17 @@ class _ScanPageState extends State<ScanPage>
         .map((r) => r['className'] as String)
         .toSet();
 
-    if (_hasRequestedCapture) {
-      _hasRequestedCapture = false;
+    if (_hasRequestedCapture.value) {
+      _hasRequestedCapture.value = false;
 
       if (detectedLabels.isEmpty) {
         Fluttertoast.showToast(msg: "No fish detected.");
       } else {
-        _pushResultsPage(detectedLabels, data['originalImage']);
+        // _pushResultsPage(detectedLabels, data['originalImage']);
+        Uint8List? frameWithOverlays = await _yoloViewController.capturePhoto(
+          withOverlays: true,
+        );
+        _pushResultsPage(detectedLabels, frameWithOverlays as Uint8List);
       }
     } else {
       setState(() {
@@ -172,9 +173,9 @@ class _ScanPageState extends State<ScanPage>
     }
   }
 
-  void _onPressCapture() {
+  void _onPressCapture() async {
     if (_scanningMode.value == 0) {
-      _hasRequestedCapture = true;
+      _hasRequestedCapture.value = true;
     }
   }
 
@@ -194,7 +195,7 @@ class _ScanPageState extends State<ScanPage>
       ResultPage(
         labels: labels.toList(),
         imageBytes: imageBytes,
-        imageRotation: 1,
+        imageRotation: 0,
       ),
     );
   }
@@ -211,14 +212,43 @@ class _ScanPageState extends State<ScanPage>
     });
 
     (() async {
-      await _yoloViewController.switchModel(
-        value == 0 ? fishModelPath : freshnessModelPath,
-      );
+      String modelPath = value == 0
+          ? storageRead<String>("fish_model_path", Assets.fish)
+          : storageRead<String>("freshness_model_path", Assets.freshness);
 
-      setState(() {
-        _isLoadingModel = false;
-      });
+      try {
+        await _yoloViewController.switchModel(modelPath);
+        setState(() {
+          _isLoadingModel = false;
+        });
+      } catch (e) {
+        Fluttertoast.showToast(msg: "Failed to load model: $e");
+      }
     })();
+  }
+
+  void onShowOverlaysChange(bool value) {
+    _yoloViewController.setShowOverlays(value);
+    storageWrite("show_overlays", value);
+    setState(() {
+      _showOverlays = value;
+    });
+  }
+
+  void onConfidenceThesholdChange(double value) {
+    _yoloViewController.setConfidenceThreshold(value);
+    storageWrite("confidence_threshold", value);
+    setState(() {
+      _confidenceThreshold = value;
+    });
+  }
+
+  void onIouThresholdChange(double value) {
+    _yoloViewController.setIoUThreshold(value);
+    storageWrite("iou_threshold", value);
+    setState(() {
+      _iouThreshold = value;
+    });
   }
 
   @override
@@ -249,8 +279,6 @@ class _ScanPageState extends State<ScanPage>
         }),
         onStreamingData: _onStreamingData,
         onModelError: _onModelError,
-        confidenceThreshold: _confidenceThreshold,
-        iouThreshold: _iouThreshold,
       );
     } else {
       streamView = Align(
@@ -295,7 +323,7 @@ class _ScanPageState extends State<ScanPage>
                     spacing: 16,
                     children: [
                       Hero(
-                        tag: 'fishes',
+                        tag: "fishes-button",
                         child: MyBubbleButton(
                           onPress: () =>
                               navigatePushHero(context, FishesPage()),
@@ -308,10 +336,10 @@ class _ScanPageState extends State<ScanPage>
                           builder: (context, currentIndex, _) => Container(
                             clipBehavior: Clip.antiAlias,
                             decoration: BoxDecoration(
-                              color: Colors.black.withValues(alpha: 0.25),
+                              color: Colors.black.withValues(alpha: 0.4),
                               borderRadius: BorderRadius.circular(999),
                               border: BoxBorder.all(
-                                color: Colors.white.withValues(alpha: 0.12),
+                                color: Colors.white.withValues(alpha: 0.2),
                               ),
                             ),
                             child: FlutterToggleTab(
@@ -395,13 +423,11 @@ class _ScanPageState extends State<ScanPage>
                             child: _showToggles
                                 ? Container(
                                     decoration: BoxDecoration(
-                                      color: Colors.black.withValues(
-                                        alpha: .25,
-                                      ),
+                                      color: Colors.black.withValues(alpha: .4),
                                       borderRadius: BorderRadius.circular(16),
                                       border: Border.all(
                                         color: Colors.white.withValues(
-                                          alpha: 0.12,
+                                          alpha: 0.2,
                                         ),
                                       ),
                                     ),
@@ -419,20 +445,14 @@ class _ScanPageState extends State<ScanPage>
                                             Text("Show overlays"),
                                             Switch(
                                               value: _showOverlays,
-                                              onChanged: (value) {
-                                                _yoloViewController
-                                                    .setShowOverlays(value);
-                                                setState(() {
-                                                  _showOverlays = value;
-                                                });
-                                              },
+                                              onChanged: onShowOverlaysChange,
                                             ),
                                           ],
                                         ),
                                         Column(
                                           children: [
                                             Text(
-                                              "Confidence threshold: ${formatPercentage(_yoloViewController.confidenceThreshold, 0)}",
+                                              "Confidence threshold: ${formatPercentage(_confidenceThreshold, 0)}",
                                             ),
                                             Slider(
                                               value: _confidenceThreshold,
@@ -443,20 +463,15 @@ class _ScanPageState extends State<ScanPage>
                                                 vertical: 8,
                                                 horizontal: 8,
                                               ),
-                                              onChanged: (v) {
-                                                _yoloViewController
-                                                    .setConfidenceThreshold(v);
-                                                setState(() {
-                                                  _confidenceThreshold = v;
-                                                });
-                                              },
+                                              onChanged:
+                                                  onConfidenceThesholdChange,
                                             ),
                                           ],
                                         ),
                                         Column(
                                           children: [
                                             Text(
-                                              "IoU threshold: ${formatPercentage(_yoloViewController.iouThreshold, 0)}",
+                                              "IoU threshold: ${formatPercentage(_iouThreshold, 0)}",
                                             ),
                                             Slider(
                                               value: _iouThreshold,
@@ -467,13 +482,7 @@ class _ScanPageState extends State<ScanPage>
                                                 vertical: 8,
                                                 horizontal: 8,
                                               ),
-                                              onChanged: (v) {
-                                                _yoloViewController
-                                                    .setIoUThreshold(v);
-                                                setState(() {
-                                                  _iouThreshold = v;
-                                                });
-                                              },
+                                              onChanged: onIouThresholdChange,
                                             ),
                                           ],
                                         ),

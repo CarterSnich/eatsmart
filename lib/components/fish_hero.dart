@@ -14,11 +14,14 @@ class MyFishHero extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Image.asset(
-          "assets/fish_images/$binomialName.jpg",
-          width: double.infinity,
-          height: 200,
-          fit: BoxFit.cover,
+        Hero(
+          tag: "fish-$popularName",
+          child: Image.asset(
+            "assets/fish_images/$binomialName.jpg",
+            width: double.infinity,
+            height: 200,
+            fit: BoxFit.cover,
+          ),
         ),
         Positioned.fill(
           child: DecoratedBox(

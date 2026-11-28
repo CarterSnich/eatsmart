@@ -22,11 +22,14 @@ class MyFishCard extends StatelessWidget {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),
-                  child: Image.asset(
-                    "assets/fish_images/${fish.binomialName}.jpg",
-                    height: 80,
-                    width: 80,
-                    fit: BoxFit.cover,
+                  child: Hero(
+                    tag: "fish-${fish.popularName}",
+                    child: Image.asset(
+                      "assets/fish_images/${fish.binomialName}.jpg",
+                      height: 80,
+                      width: 80,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
                 Column(

@@ -47,12 +47,12 @@ class _FishesPageState extends State<FishesPage> {
   @override
   Widget build(BuildContext context) {
     return MySliverScaffold(
-      customAppBar: SliverAppBar(
-        pinned: true,
-        surfaceTintColor: Theme.of(context).scaffoldBackgroundColor,
-        shadowColor: Theme.of(context).scaffoldBackgroundColor,
-        title: Hero(
-          tag: 'fishes',
+      spacing: 10,
+      title: 'Fishes',
+      stickyBottom: Padding(
+        padding: const EdgeInsets.only(bottom: 8.0),
+        child: Hero(
+          tag: "fishes-button",
           child: MyBubbleSearchBar(
             child: Expanded(
               child: TextField(
@@ -67,12 +67,8 @@ class _FishesPageState extends State<FishesPage> {
             ),
           ),
         ),
-        floating: true,
-        snap: true,
-        automaticallyImplyLeading: false,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       ),
-      spacing: 10,
+      stickyBottomHeight: 56,
       children: List.generate(
         _results.length,
         (i) => MyFishCard(fish: _results[i]),

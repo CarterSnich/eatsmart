@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:ultralytics_yolo/yolo.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 Future<dynamic> navigatePush(
   BuildContext context,
@@ -37,8 +40,17 @@ Future<YOLO> initYolo(String modelPath) async {
   return yolo;
 }
 
-Future<List<String>> predict(YOLO model, Uint8List imageBytes) async {
-  final results = await model.predict(imageBytes);
+Future<List<String>> predict(
+  YOLO model,
+  Uint8List imageBytes, {
+  double confidenceThreshold = 0.25,
+  double ioutThreshold = 0.7,
+}) async {
+  final results = await model.predict(
+    imageBytes,
+    confidenceThreshold: confidenceThreshold,
+    iouThreshold: ioutThreshold,
+  );
 
   if (results['detections'].isEmpty) {
     return [];
@@ -64,4 +76,20 @@ void showNotifBar(BuildContext context) {
       statusBarIconBrightness: isLight ? Brightness.dark : Brightness.light,
     ),
   );
+}
+
+Future<void> storageWrite(String key, dynamic value) async {
+  await GetStorage().write(key, value);
+}
+
+T storageRead<T>(String key, T fallback) {
+  return GetStorage().read<T>(key) ?? fallback;
+}
+
+Future<void> openLink(String url) async {
+  final uri = Uri.parse(url);
+  final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
+  if (!ok) {
+    Fluttertoast.showToast(msg: "Couldn't open link");
+  }
 }

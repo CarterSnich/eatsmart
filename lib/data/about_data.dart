@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:isdasmart/generated_assets/assets.dart';
+import 'package:isdasmart/generated/assets.dart';
 
 final List<dynamic> researchers = [
   {
@@ -41,31 +41,31 @@ final List<dynamic> researchers = [
 
 final List<Map<String, String>> references = [
   {
-    "icon": Assets.iconBrandingsFishbaseLogo,
+    "icon": Assets.fishbaseLogo.path,
     "name": "FishBase",
     "description":
         "A global database of fish species used as a reference for taxonomy, scientific names, common names, biology, and other fish-related information.",
   },
   {
-    "icon": Assets.iconBrandingsFlutterIcon,
+    "icon": Assets.flutterIcon.path,
     "name": "Flutter",
     "description":
         "Google's open-source UI framework used to develop the isdasmart mobile application and its user interface from a single codebase.",
   },
   {
-    "icon": Assets.iconBrandingsUltralyticsYoloIcon,
+    "icon": Assets.ultralyticsYOLOIcon.path,
     "name": "Ultralytics YOLO",
     "description":
         "A computer vision framework used to develop, train, evaluate, and run the YOLO26 fish identification models.",
   },
   {
-    "icon": Assets.iconBrandingsUltralyticsIcon,
+    "icon": Assets.ultralyticsIcon.path,
     "name": "Ultralytics Platform",
     "description":
         "A computer vision platform used for dataset management, image annotation, model training, experiment tracking, and model deployment workflows.",
   },
   {
-    "icon": Assets.iconBrandingsTfFullcolorIcon,
+    "icon": Assets.tFFullColorIcon.path,
     "name": "TFLite / LiteRT",
     "description":
         "Google's on-device machine learning runtime used to run optimized machine learning models on mobile and edge devices. TensorFlow Lite is now known as LiteRT, while the .tflite model format remains supported.",

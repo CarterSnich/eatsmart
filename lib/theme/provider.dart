@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:get_storage/get_storage.dart';
+
+import '../helpers.dart';
 
 class ThemeProvider extends ChangeNotifier {
   ThemeMode themeMode;
@@ -8,7 +9,7 @@ class ThemeProvider extends ChangeNotifier {
 
   void setThemeMode(ThemeMode mode) {
     themeMode = mode;
-    GetStorage().write('theme_mode', mode.index);
+    storageWrite('theme_mode', mode.index);
     notifyListeners();
   }
 }

@@ -3,7 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:isdasmart/generated_assets/assets.dart';
+import 'package:isdasmart/generated/assets.dart';
 import 'package:isdasmart/helpers.dart';
 import 'package:isdasmart/screens/result.dart';
 
@@ -30,7 +30,12 @@ class _ImageDetectPageState extends State<ImageDetectPage> {
     (() async {
       final yolo = await initYolo(Assets.fish);
       final imageBytes = await _imageFile.readAsBytes();
-      final labels = await predict(yolo, imageBytes);
+      final labels = await predict(
+        yolo,
+        imageBytes,
+        confidenceThreshold: storageRead("confidence_threshold", .25),
+        ioutThreshold: storageRead("iou_threshold", .7),
+      );
 
       if (labels.isEmpty) {
         Fluttertoast.showToast(msg: "No fish detected or fish unknown.");
